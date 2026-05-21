@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<title>Campus Ride – Login</title>
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div class="auth-logo-mark">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+      </div>
+      <div class="auth-brand">Campus Ride</div>
+      <div class="auth-tagline">Rides for students, by students</div>
+    </div>
+
+    <h2 class="auth-title">Welcome back</h2>
+    <p class="auth-sub">Enter your college email address to continue</p>
+
+    <form class="auth-form" onsubmit="handleLogin(event)">
+      <div class="auth-input-group">
+        <label class="auth-label" for="email">College Email</label>
+        <div class="input-wrap" style="display:flex; align-items:center; position:relative;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; left:0.875rem; color:var(--text-3); pointer-events:none; flex-shrink:0;"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <input
+            id="email"
+            class="form-input"
+            type="email"
+            inputmode="email"
+            placeholder="yourname@college.ac.in"
+            autocomplete="email"
+            required
+            style="width:100%;"
+          >
+        </div>
+        <small style="font-size:0.75rem; color:var(--text-3); margin-top:0.25rem;">Use your institutional email (e.g. @bmsce.ac.in)</small>
+      </div>
+
+      <button type="submit" class="btn-primary">
+        Continue
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      By continuing you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.<br>
+      New here? Your account is created automatically.
+    </p>
+
+  </div>
+</div>
+
+<script>
+function handleLogin(e) {
+  e.preventDefault();
+  const val = document.getElementById('email').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  window.location.href = 'otp.html';
+}
+</script>
+
+</body>
+</html>
