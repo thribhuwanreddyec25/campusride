@@ -79,76 +79,16 @@
     </div>
   </div>
 
-  <!-- Upcoming Bookings -->
-  <div>
+  <!-- Upcoming Bookings (dynamic) -->
+  <div id="bookings-section">
     <div class="section-hd">
       <h2>Upcoming Bookings</h2>
-      <span class="section-tag">2 upcoming</span>
+      <span class="section-tag" id="bookings-tag">0 upcoming</span>
     </div>
-    <div class="rides-list">
-
-      <div class="ride-card">
-        <div class="ride-top">
-          <div class="ride-driver">
-            <div class="ride-avatar">AS</div>
-            <div>
-              <div class="ride-name">
-                Aarav Sharma
-                <svg class="verified-badge" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
-              </div>
-              <div class="ride-meta">
-                <span class="rating">★ 4.9</span>
-              </div>
-            </div>
-          </div>
-          <span class="ride-time">Today, 4:30 PM</span>
-        </div>
-        <div class="ride-route">
-          <span class="route-from">BMS College of Engineering</span>
-          <span class="route-arrow">→</span>
-          <span class="route-to">Lalbagh Botanical Garden</span>
-        </div>
-        <div class="ride-footer">
-          <span class="ride-price"><span class="currency">₹</span>80</span>
-          <div class="ride-seats">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            2 seats left
-          </div>
-          <span class="status-badge completed">Booked</span>
-        </div>
-      </div>
-
-      <div class="ride-card">
-        <div class="ride-top">
-          <div class="ride-driver">
-            <div class="ride-avatar">RP</div>
-            <div>
-              <div class="ride-name">
-                Rohan Patel
-                <svg class="verified-badge" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
-              </div>
-              <div class="ride-meta">
-                <span class="rating">★ 4.7</span>
-              </div>
-            </div>
-          </div>
-          <span class="ride-time">Tomorrow, 2:00 PM</span>
-        </div>
-        <div class="ride-route">
-          <span class="route-from">National College</span>
-          <span class="route-arrow">→</span>
-          <span class="route-to">MG Road</span>
-        </div>
-        <div class="ride-footer">
-          <span class="ride-price"><span class="currency">₹</span>60</span>
-          <div class="ride-seats">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            1 seat left
-          </div>
-          <span class="status-badge completed">Booked</span>
-        </div>
-      </div>
-
+    <div class="rides-list" id="bookings-list">
+      <p id="no-bookings" style="text-align:center; color:var(--text-3); font-size:0.88rem; padding:1.5rem 0;">
+        No bookings yet — <a href="rides.html" style="color:var(--brand);">find a ride</a>.
+      </p>
     </div>
   </div>
 
@@ -194,7 +134,7 @@
         <div class="input-group">
           <label class="input-label">Vehicle</label>
           <div class="input-wrap">
-            <svg id="home-vehicle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+            <span id="home-vehicle-icon" style="display:contents"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span>
             <select id="hOfferVehicle" class="form-input" onchange="RIDES.swapVehicleIcon('home-vehicle-icon', this.value)">
               <option value="auto">Auto</option>
               <option value="cab" selected>Cab</option>
@@ -221,10 +161,56 @@
 <script>
   // Auth check
   if (!AUTH.requireAuth()) { /* redirected to login */ }
+  var user = AUTH.currentUser();
+
+  /* ── Upcoming Bookings ── */
+  RIDES.getBookedBy(user, function (booked) {
+    var list   = document.getElementById('bookings-list');
+    var noEl   = document.getElementById('no-bookings');
+    var tagEl  = document.getElementById('bookings-tag');
+
+    tagEl.textContent = booked.length + ' upcoming';
+    noEl.style.display = booked.length === 0 ? 'block' : 'none';
+
+    // Remove old dynamic cards (keep the no-bookings p)
+    Array.from(list.querySelectorAll('.ride-card')).forEach(function (c) { list.removeChild(c); });
+
+    booked.forEach(function (ride) {
+      var driverName = AUTH.displayName(ride.offeredBy);
+      var initials   = driverName.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
+      var seatsLeft  = Math.max(0, parseInt(ride.seats) - ride.bookedBy.length);
+
+      var card = document.createElement('div');
+      card.className = 'ride-card';
+      card.innerHTML =
+        '<div class="ride-top">' +
+          '<div class="ride-driver">' +
+            '<div class="ride-avatar">' + RIDES.esc(initials) + '</div>' +
+            '<div>' +
+              '<div class="ride-name">' + RIDES.esc(driverName) +
+                ' <svg class="verified-badge" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>' +
+              '</div>' +
+              '<div class="ride-meta">' + RIDES.cap(ride.vehicle || 'cab') + ' · ' + RIDES.esc(ride.offeredBy) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<span class="ride-time">' + RIDES.formatDT(ride.datetime) + '</span>' +
+        '</div>' +
+        '<div class="ride-route">' +
+          '<span class="route-from">' + RIDES.esc(ride.from) + '</span>' +
+          '<span class="route-arrow">→</span>' +
+          '<span class="route-to">'   + RIDES.esc(ride.to)   + '</span>' +
+        '</div>' +
+        '<div class="ride-footer">' +
+          '<span class="ride-price"><span class="currency">₹</span>' + RIDES.esc(String(ride.price || '—')) + '</span>' +
+          '<div class="ride-seats"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ' + seatsLeft + ' seat' + (seatsLeft !== 1 ? 's' : '') + ' left</div>' +
+          '<span class="status-badge completed">Booked</span>' +
+        '</div>';
+      list.appendChild(card);
+    });
+  });
 
   function postRideHome(e) {
     e.preventDefault();
-    var user    = AUTH.currentUser();
     var from    = document.getElementById('hOfferFrom').value.trim();
     var to      = document.getElementById('hOfferTo').value.trim();
     var dt      = document.getElementById('hOfferDatetime').value;

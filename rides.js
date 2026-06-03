@@ -147,17 +147,18 @@ var RIDES = (function () {
   var _AUTO = '<g transform="scale(-1,1) translate(-72,0)"><circle cx="54" cy="38" r="8"/><circle cx="54" cy="38" r="3"/><circle cx="12" cy="38" r="6"/><circle cx="12" cy="38" r="2"/><path d="M20 36 L20 14 Q22 4 34 3 L54 3 Q62 6 62 14 L62 36 Z"/><line x1="20" y1="14" x2="27" y2="3"/><rect x="34" y="8" width="18" height="13" rx="2"/><path d="M20 32 L14 30 L12 32"/><path d="M15 22 Q18 19 22 20"/></g>';
   var _BIKE = '<g transform="scale(-1,1) translate(-72,0)"><circle cx="54" cy="36" r="10"/><circle cx="54" cy="36" r="3.5"/><circle cx="16" cy="36" r="10"/><circle cx="16" cy="36" r="3.5"/><line x1="16" y1="26" x2="24" y2="12"/><path d="M22 12 L30 10 L32 13"/><path d="M30 10 L34 26 L46 26 L54 28"/><path d="M30 26 L28 16 L48 14 L52 22 L46 26"/><path d="M34 28 L34 36 L46 36 L46 28 Z"/><path d="M46 34 L58 36"/></g>';
 
-  function swapVehicleIcon(svgId, value) {
-    var el = document.getElementById(svgId);
-    if (!el) return;
-    var base = ' fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"';
+  // spanId is a <span> wrapper; set innerHTML so HTML parser creates proper SVG
+  function swapVehicleIcon(spanId, value) {
+    var span = document.getElementById(spanId);
+    if (!span) return;
+    var b = ' fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"';
     var map = {
-      all:  '<svg id="' + svgId + '" width="16" height="16" viewBox="0 0 24 24"' + base + ' stroke-width="2">'  + _CAB  + '</svg>',
-      cab:  '<svg id="' + svgId + '" width="16" height="16" viewBox="0 0 24 24"' + base + ' stroke-width="2">'  + _CAB  + '</svg>',
-      auto: '<svg id="' + svgId + '" width="20" height="14" viewBox="0 0 72 48"' + base + ' stroke-width="2.2">' + _AUTO + '</svg>',
-      bike: '<svg id="' + svgId + '" width="20" height="14" viewBox="0 0 72 48"' + base + ' stroke-width="2.2">' + _BIKE + '</svg>',
+      all:  '<svg width="16" height="16" viewBox="0 0 24 24"' + b + ' stroke-width="2">'   + _CAB  + '</svg>',
+      cab:  '<svg width="16" height="16" viewBox="0 0 24 24"' + b + ' stroke-width="2">'   + _CAB  + '</svg>',
+      auto: '<svg width="20" height="14" viewBox="0 0 72 48"' + b + ' stroke-width="2.2">' + _AUTO + '</svg>',
+      bike: '<svg width="20" height="14" viewBox="0 0 72 48"' + b + ' stroke-width="2.2">' + _BIKE + '</svg>',
     };
-    el.outerHTML = map[value] || map['all'];
+    span.innerHTML = map[value] || map['all'];
   }
 
   return {

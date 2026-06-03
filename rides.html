@@ -82,7 +82,7 @@
         <div class="input-group">
           <label class="input-label" for="vehicle">Vehicle</label>
           <div class="input-wrap">
-            <svg id="search-vehicle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+            <span id="search-vehicle-icon" style="display:contents"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span>
             <select id="vehicle" class="form-input" onchange="filterRides(); RIDES.swapVehicleIcon('search-vehicle-icon', this.value)">
               <option value="all">All Types</option>
               <option value="auto">Auto</option>
@@ -140,7 +140,7 @@
   <div>
     <div class="section-hd">
       <h2>Available Rides</h2>
-      <span class="section-tag" id="ride-count">6 rides</span>
+      <span class="section-tag" id="ride-count">2 rides</span>
     </div>
 
     <!-- Live rides posted by other users (dynamic) -->
@@ -149,46 +149,8 @@
       No student rides posted yet — be the first!
     </p>
 
-    <!-- Static demo rides -->
-    <div class="rides-list" id="rides-container">
-
-      <div class="ride-card" data-vehicle="auto" data-price="50" data-seats="4" data-time="1">
-        <div class="ride-top"><div class="ride-driver"><div class="ride-avatar">AI</div><div><div class="ride-name">Ananya Iyer <svg class="verified-badge" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></div><div class="ride-meta"><span class="rating">★ 4.8</span> · Auto · 4 seats</div></div></div><span class="ride-time">6:00 PM</span></div>
-        <div class="ride-route"><span class="route-from">BMS College</span><span class="route-arrow">→</span><span class="route-to">VV Puram Food Street</span></div>
-        <div class="ride-footer"><span class="ride-price"><span class="currency">₹</span>50</span><div class="ride-seats"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>4 seats</div><button class="btn-book" onclick="requestRide(this)">Book</button></div>
-      </div>
-
-      <div class="ride-card" data-vehicle="bike" data-price="60" data-seats="1" data-time="2">
-        <div class="ride-top"><div class="ride-driver"><div class="ride-avatar">KS</div><div><div class="ride-name">Kabir Singh <svg class="verified-badge" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></div><div class="ride-meta"><span class="rating">★ 4.6</span> · Bike · 1 seat</div></div></div><span class="ride-time">5:00 PM</span></div>
-        <div class="ride-route"><span class="route-from">National College</span><span class="route-arrow">→</span><span class="route-to">Koramangala</span></div>
-        <div class="ride-footer"><span class="ride-price"><span class="currency">₹</span>60</span><div class="ride-seats"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>1 seat</div><button class="btn-book" onclick="requestRide(this)">Book</button></div>
-      </div>
-
-      <div class="ride-card" data-vehicle="auto" data-price="80" data-seats="3" data-time="3">
-        <div class="ride-top"><div class="ride-driver"><div class="ride-avatar">AS</div><div><div class="ride-name">Aarav Sharma <svg class="verified-badge" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></div><div class="ride-meta"><span class="rating">★ 4.9</span> · Auto · 3 seats</div></div></div><span class="ride-time">4:30 PM</span></div>
-        <div class="ride-route"><span class="route-from">BMS College</span><span class="route-arrow">→</span><span class="route-to">Lalbagh Botanical Garden</span></div>
-        <div class="ride-footer"><span class="ride-price"><span class="currency">₹</span>80</span><div class="ride-seats"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>3 seats</div><button class="btn-book" onclick="requestRide(this)">Book</button></div>
-      </div>
-
-      <div class="ride-card" data-vehicle="cab" data-price="90" data-seats="3" data-time="4">
-        <div class="ride-top"><div class="ride-driver"><div class="ride-avatar">MN</div><div><div class="ride-name">Meera Nair <svg class="verified-badge" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></div><div class="ride-meta"><span class="rating">★ 4.7</span> · Cab · 3 seats</div></div></div><span class="ride-time">7:00 PM</span></div>
-        <div class="ride-route"><span class="route-from">National College</span><span class="route-arrow">→</span><span class="route-to">Cubbon Park</span></div>
-        <div class="ride-footer"><span class="ride-price"><span class="currency">₹</span>90</span><div class="ride-seats"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>3 seats</div><button class="btn-book" onclick="requestRide(this)">Book</button></div>
-      </div>
-
-      <div class="ride-card" data-vehicle="auto" data-price="100" data-seats="2" data-time="5">
-        <div class="ride-top"><div class="ride-driver"><div class="ride-avatar">IR</div><div><div class="ride-name">Isha Reddy <svg class="verified-badge" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></div><div class="ride-meta"><span class="rating">★ 4.5</span> · Auto · 2 seats</div></div></div><span class="ride-time">Tomorrow 3:30 PM</span></div>
-        <div class="ride-route"><span class="route-from">BMS College</span><span class="route-arrow">→</span><span class="route-to">Brigade Road</span></div>
-        <div class="ride-footer"><span class="ride-price"><span class="currency">₹</span>100</span><div class="ride-seats"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>2 seats</div><button class="btn-book" onclick="requestRide(this)">Book</button></div>
-      </div>
-
-      <div class="ride-card" data-vehicle="cab" data-price="120" data-seats="2" data-time="6">
-        <div class="ride-top"><div class="ride-driver"><div class="ride-avatar">RP</div><div><div class="ride-name">Rohan Patel <svg class="verified-badge" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></div><div class="ride-meta"><span class="rating">★ 4.7</span> · Cab · 2 seats</div></div></div><span class="ride-time">Tomorrow 2:00 PM</span></div>
-        <div class="ride-route"><span class="route-from">National College</span><span class="route-arrow">→</span><span class="route-to">MG Road</span></div>
-        <div class="ride-footer"><span class="ride-price"><span class="currency">₹</span>120</span><div class="ride-seats"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>2 seats</div><button class="btn-book" onclick="requestRide(this)">Book</button></div>
-      </div>
-
-    </div>
+    <!-- Real rides from Firebase (seeded on first load if empty) -->
+    <div class="rides-list" id="rides-container"></div>
     <p id="no-rides" style="display:none; text-align:center; color:var(--text-2); padding:3rem 0; font-size:0.9rem;">No rides found for this filter.</p>
   </div>
 
@@ -196,20 +158,48 @@
 
 <script>
   AUTH.requireAuth();
-  var currentUser = AUTH.currentUser();
+  var currentUser    = AUTH.currentUser();
+  var _allAvailable  = [];   // cache for filter/sort
+  var _seeded        = false; // prevent double-seed
 
-  /* ── Real-time listener — fires on load + whenever any ride changes ── */
+  /* ── Real-time listener ── */
   RIDES.onRidesChange(function (allRides) {
-    // Rides available to book (not your own)
-    var available = allRides.filter(function (r) {
+    // Seed 2 example rides the very first time the DB is empty
+    if (allRides.length === 0 && !_seeded) {
+      _seeded = true;
+      var tmr = new Date(); tmr.setDate(tmr.getDate() + 1);
+      function dt(h, m) { var d = new Date(tmr); d.setHours(h, m, 0, 0); return d.toISOString().slice(0, 16); }
+      RIDES.add({ offeredBy: 'arjun.kumar@bmsce.ac.in',  from: 'BMS College', to: 'Jayanagar',    datetime: dt(17,30), seats: 3, vehicle: 'auto', price: 45 });
+      RIDES.add({ offeredBy: 'priya.sharma@bmsce.ac.in', from: 'BMS College', to: 'Banashankari', datetime: dt(18,15), seats: 2, vehicle: 'cab',  price: 70 });
+      return; // listener will fire again with the seeded data
+    }
+
+    _allAvailable = allRides.filter(function (r) {
       return r.offeredBy !== currentUser && r.status !== 'cancelled';
     });
-    renderLiveRides(available);
+    applyFilter();
 
-    // Your own posted rides
     var mine = allRides.filter(function (r) { return r.offeredBy === currentUser; });
     renderMyRides(mine);
   });
+
+  /* ── Apply filter + sort to live rides ── */
+  function applyFilter() {
+    var val      = document.getElementById('vehicle').value;
+    var sortVal  = document.getElementById('sortby').value;
+
+    var filtered = val === 'all'
+      ? _allAvailable.slice()
+      : _allAvailable.filter(function (r) { return r.vehicle === val; });
+
+    filtered.sort(function (a, b) {
+      if (sortVal === 'price') return (a.price || 0) - (b.price || 0);
+      if (sortVal === 'seats') return (parseInt(b.seats) - b.bookedBy.length) - (parseInt(a.seats) - a.bookedBy.length);
+      return (b.postedAt || 0) - (a.postedAt || 0); // newest first (time)
+    });
+
+    renderLiveRides(filtered);
+  }
 
   function renderLiveRides(rides) {
     var lc = document.getElementById('live-rides-container');
@@ -220,7 +210,7 @@
   }
 
   function renderMyRides(rides) {
-    var section = document.getElementById('your-rides-section');
+    var section   = document.getElementById('your-rides-section');
     var container = document.getElementById('your-rides-container');
     section.style.display = rides.length === 0 ? 'none' : 'block';
     document.getElementById('your-ride-count').textContent = rides.length + ' ride' + (rides.length !== 1 ? 's' : '');
@@ -231,7 +221,6 @@
       var seatsLeft = Math.max(0, total - booked);
       var statusClass = ride.status === 'full' ? 'completed' : 'pending';
       var statusLabel = ride.status === 'full' ? 'Full' : 'Open · ' + seatsLeft + ' left';
-
       var card = document.createElement('div');
       card.className = 'ride-card';
       card.style.borderColor = 'var(--brand)';
@@ -239,24 +228,15 @@
         '<div class="ride-top">' +
           '<div class="ride-driver">' +
             '<div class="ride-avatar" style="background:var(--brand);color:white;">You</div>' +
-            '<div>' +
-              '<div class="ride-name">Your ride · ' + RIDES.cap(ride.vehicle || 'cab') + '</div>' +
-              '<div class="ride-meta">' + RIDES.formatDT(ride.datetime) + '</div>' +
-            '</div>' +
+            '<div><div class="ride-name">Your ride · ' + RIDES.cap(ride.vehicle || 'cab') + '</div>' +
+            '<div class="ride-meta">' + RIDES.formatDT(ride.datetime) + '</div></div>' +
           '</div>' +
           '<span class="status-badge ' + statusClass + '">' + statusLabel + '</span>' +
         '</div>' +
-        '<div class="ride-route">' +
-          '<span class="route-from">' + RIDES.esc(ride.from) + '</span>' +
-          '<span class="route-arrow">→</span>' +
-          '<span class="route-to">'   + RIDES.esc(ride.to)   + '</span>' +
-        '</div>' +
+        '<div class="ride-route"><span class="route-from">' + RIDES.esc(ride.from) + '</span><span class="route-arrow">→</span><span class="route-to">' + RIDES.esc(ride.to) + '</span></div>' +
         '<div class="ride-footer">' +
           '<span class="ride-price"><span class="currency">₹</span>' + RIDES.esc(String(ride.price || '—')) + '</span>' +
-          '<div class="ride-seats">' +
-            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ' +
-            booked + '/' + total + ' booked' +
-          '</div>' +
+          '<div class="ride-seats"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ' + booked + '/' + total + ' booked</div>' +
         '</div>';
       container.appendChild(card);
     });
@@ -281,7 +261,6 @@
     div.dataset.vehicle = vehicle;
     div.dataset.price   = String(price);
     div.dataset.seats   = String(seatsLeft);
-    div.dataset.time    = '0';
     div.dataset.rideId  = ride.id;
 
     div.innerHTML =
@@ -305,7 +284,7 @@
       '<div class="ride-footer">' +
         '<span class="ride-price"><span class="currency">₹</span>' + RIDES.esc(String(price)) + '</span>' +
         '<div class="ride-seats"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ' + seatsLeft + ' left</div>' +
-        '<button class="btn-book"' + btnExtra + ' onclick="bookRide(this,\'' + ride.id + '\')">' + btnLabel + '</button>' +
+        '<button class="btn-book"' + btnExtra + ' onclick="bookRide(this,'' + ride.id + '')">' + btnLabel + '</button>' +
       '</div>';
 
     return div;
@@ -318,17 +297,14 @@
       if (result.ok) {
         btn.textContent      = '✓ Booked';
         btn.style.background = 'var(--green)';
-        // onRidesChange fires automatically and re-renders seat counts
+        // onRidesChange fires → re-renders seats, updates home Upcoming Bookings on next visit
       } else if (result.error === 'own_ride') {
         btn.textContent = 'Book'; btn.disabled = false;
         alert("You can't book your own ride.");
       } else if (result.error === 'full') {
-        btn.textContent      = 'Full';
-        btn.style.background = 'var(--text-3)';
-        btn.style.cursor     = 'not-allowed';
+        btn.textContent = 'Full'; btn.style.background = 'var(--text-3)'; btn.style.cursor = 'not-allowed';
       } else if (result.error === 'already_booked') {
-        btn.textContent      = '✓ Booked';
-        btn.style.background = 'var(--green)';
+        btn.textContent = '✓ Booked'; btn.style.background = 'var(--green)';
       } else {
         btn.textContent = 'Book'; btn.disabled = false;
       }
@@ -336,47 +312,21 @@
   }
 
   function updateCount() {
-    var total = document.querySelectorAll('#live-rides-container .ride-card, #rides-container .ride-card').length;
+    var total = document.querySelectorAll('#live-rides-container .ride-card').length;
     document.getElementById('ride-count').textContent = total + ' ride' + (total !== 1 ? 's' : '');
   }
 
-  /* ── Filter & sort (applies to static demo rides) ── */
+  /* ── Filter chips + dropdowns (all go through applyFilter) ── */
   function setFilter(type, chip) {
     document.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('active'); });
     chip.classList.add('active');
     document.getElementById('vehicle').value = type;
-    filterRides();
+    RIDES.swapVehicleIcon('search-vehicle-icon', type);
+    applyFilter();
   }
 
-  function filterRides() {
-    var val   = document.getElementById('vehicle').value;
-    var cards = document.querySelectorAll('#rides-container .ride-card');
-    var visible = 0;
-    cards.forEach(function (c) {
-      var show = val === 'all' || c.dataset.vehicle === val;
-      c.style.display = show ? '' : 'none';
-      if (show) visible++;
-    });
-    document.getElementById('no-rides').style.display = visible === 0 ? 'block' : 'none';
-  }
-
-  function sortRides() {
-    var val       = document.getElementById('sortby').value;
-    var container = document.getElementById('rides-container');
-    var cards     = Array.from(container.querySelectorAll('.ride-card'));
-    cards.sort(function (a, b) {
-      if (val === 'price') return parseInt(a.dataset.price) - parseInt(b.dataset.price);
-      if (val === 'seats') return parseInt(b.dataset.seats) - parseInt(a.dataset.seats);
-      if (val === 'time')  return parseInt(a.dataset.time)  - parseInt(b.dataset.time);
-      return 0;
-    });
-    cards.forEach(function (c) { container.appendChild(c); });
-  }
-
-  /* ── Static demo book button ── */
-  function requestRide(btn) {
-    btn.textContent = '✓ Booked'; btn.style.background = 'var(--green)'; btn.disabled = true;
-  }
+  function filterRides() { applyFilter(); }
+  function sortRides()   { applyFilter(); }
 
   /* ── Offer sheet ── */
   function openOfferSheet() {
@@ -391,7 +341,7 @@
 
   function postRide(e) {
     e.preventDefault();
-    var errEl   = document.getElementById('rOfferError');
+    var errEl = document.getElementById('rOfferError');
     errEl.style.display = 'none';
 
     var from    = document.getElementById('rOfferFrom').value.trim();
@@ -409,16 +359,14 @@
 
     RIDES.add({ offeredBy: currentUser, from: from, to: to, datetime: dt, seats: seats, vehicle: vehicle, price: price });
 
-    // Reset form
-    document.getElementById('rOfferFrom').value      = '';
-    document.getElementById('rOfferTo').value        = '';
-    document.getElementById('rOfferDatetime').value  = '';
-    document.getElementById('rOfferSeats').value     = '3';
-    document.getElementById('rOfferVehicle').value   = 'cab';
-    document.getElementById('rOfferPrice').value     = '';
+    document.getElementById('rOfferFrom').value     = '';
+    document.getElementById('rOfferTo').value       = '';
+    document.getElementById('rOfferDatetime').value = '';
+    document.getElementById('rOfferSeats').value    = '3';
+    document.getElementById('rOfferVehicle').value  = 'cab';
+    document.getElementById('rOfferPrice').value    = '';
 
     closeOfferSheet();
-    // onRidesChange listener fires automatically — no manual render needed
   }
 </script>
 
@@ -462,7 +410,7 @@
         <div class="input-group">
           <label class="input-label">Vehicle</label>
           <div class="input-wrap">
-            <svg id="offer-vehicle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+            <span id="offer-vehicle-icon" style="display:contents"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span>
             <select id="rOfferVehicle" class="form-input" onchange="RIDES.swapVehicleIcon('offer-vehicle-icon', this.value)">
               <option value="auto">Auto</option>
               <option value="cab" selected>Cab</option>
@@ -505,10 +453,4 @@
     <button type="button" class="bottom-nav-link theme-toggle" data-theme-toggle aria-label="Toggle theme" aria-pressed="false">
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-      <span>Theme</span>
-    </button>
-  </div>
-</nav>
-
-</body>
-</html>
+      <span>Theme</spa
