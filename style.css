@@ -1210,6 +1210,27 @@ h4 { font-size: 0.875rem; font-weight: 600; }
   .bottom-nav { display: none; }
 }
 
+/* ── Error / Info Messages ────────────────────────────────── */
+.msg-error {
+  font-size: 0.82rem;
+  color: var(--red);
+  background: var(--red-bg);
+  border-radius: var(--r-md);
+  padding: 0.5rem 0.75rem;
+  display: none;
+}
+
+.msg-info {
+  font-size: 0.82rem;
+  color: var(--brand);
+  background: var(--brand-subtle);
+  border-radius: var(--r-md);
+  padding: 0.5rem 0.75rem;
+  display: none;
+}
+
+.fw-600 { font-weight: 600; }
+
 /* ── Focus Visible ────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--brand);

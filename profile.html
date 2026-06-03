@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="style.css">
 <title>Campus Ride – Profile</title>
+<script src="auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="rides.js"></script>
 <script>
   (function () {
     try {
@@ -47,13 +51,13 @@
 
   <!-- Profile Hero -->
   <div class="profile-hero">
-    <div class="profile-avatar">AK</div>
+    <div class="profile-avatar" id="profileAvatar">??</div>
     <div class="profile-info">
-      <div class="profile-name">
-        Arjun Kumar
+      <div class="profile-name" id="profileName">
+        Loading…
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
       </div>
-      <div class="profile-handle">arjun.kumar@bmsce.ac.in</div>
+      <div class="profile-handle" id="profileEmail">—</div>
       <div class="profile-rating">
         <span class="rating-val">4.8</span>
         <div class="stars">
@@ -63,42 +67,31 @@
           <svg class="star-filled" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
           <svg class="star-empty" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
         </div>
-        <span style="font-size:0.75rem; color:rgba(255,255,255,0.55);">(32 rides)</span>
+        <span style="font-size:0.75rem; color:rgba(255,255,255,0.55);">(0 rides)</span>
       </div>
     </div>
   </div>
 
   <!-- Stats -->
   <div class="stat-row">
-    <div class="stat-box">
-      <div class="stat-num">3</div>
-      <div class="stat-label">Rides Taken</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-num">3</div>
-      <div class="stat-label">Rides Offered</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-num">4.8</div>
-      <div class="stat-label">Rating</div>
-    </div>
+    <div class="stat-box"><div class="stat-num">0</div><div class="stat-label">Rides Taken</div></div>
+    <div class="stat-box"><div class="stat-num">0</div><div class="stat-label">Rides Offered</div></div>
+    <div class="stat-box"><div class="stat-num">4.8</div><div class="stat-label">Rating</div></div>
   </div>
 
-  <!-- Account & Verification -->
+  <!-- Account Details -->
   <div>
-    <div class="section-hd">
-      <h2>Account Details</h2>
-    </div>
+    <div class="section-hd"><h2>Account Details</h2></div>
     <div class="settings-card">
 
-      <!-- College Email -->
-      <div class="settings-item">
+      <!-- College Email (read-only) -->
+      <div class="settings-item" style="cursor:default;">
         <div class="settings-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         </div>
         <div class="settings-label">
           <span>College Email</span>
-          <small>arjun.kumar@bmsce.ac.in</small>
+          <small id="accountEmail">—</small>
         </div>
         <div class="verify-item" style="gap:0.25rem;">
           <svg class="verify-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -106,21 +99,21 @@
         </div>
       </div>
 
-      <!-- Phone Number -->
-      <div class="settings-item" style="cursor:default; flex-wrap:wrap; align-items:flex-start; padding-bottom:0.5rem;" id="phoneRow">
+      <!-- Phone Number (editable) -->
+      <div class="settings-item" id="phoneRow" style="cursor:default; flex-wrap:wrap; align-items:flex-start; padding-bottom:0.5rem;">
         <div class="settings-icon" style="margin-top:0.1rem;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         </div>
         <div class="settings-label" style="flex:1; min-width:0;">
           <span>Phone Number</span>
-          <small id="phoneDisplay">+91 98765 43210</small>
+          <small id="phoneDisplay">Not set</small>
         </div>
-        <button class="btn-ghost" onclick="openPhoneEdit()" style="padding:0.3rem 0.6rem; font-size:0.78rem; flex-shrink:0;">Edit</button>
+        <button class="btn-ghost" onclick="openPhoneEdit()" style="padding:0.3rem 0.6rem; font-size:0.78rem; flex-shrink:0;" id="phoneEditBtn">Edit</button>
 
         <!-- Inline edit panel -->
-        <div id="phoneEditPanel" style="display:none; width:100%; padding:0.5rem 0 0.5rem 3.25rem;">
+        <div id="phoneEditPanel" style="display:none; width:100%; padding:0.5rem 0 0.25rem 3.25rem;">
           <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
-            <div style="width:80px; flex-shrink:0;">
+            <div style="width:72px; flex-shrink:0;">
               <input id="phoneCC" class="form-input no-icon" type="text" placeholder="+91" maxlength="5" aria-label="Country code" style="padding:0.6rem 0.5rem;">
             </div>
             <div style="flex:1;">
@@ -134,13 +127,13 @@
           </div>
         </div>
 
-        <!-- Verify banner -->
-        <div id="phoneVerifyBanner" style="display:none; width:100%; padding:0.625rem 0.875rem 0.625rem 3.25rem; background:var(--brand-subtle); border-radius:var(--r-md); margin-top:0.5rem; font-size:0.82rem; color:var(--brand);">
-          Verification sent to <strong id="bannerPhone"></strong>. Check your messages to verify.
+        <!-- Saved banner -->
+        <div id="phoneVerifyBanner" style="display:none; width:100%; padding:0.5rem 0.875rem 0.5rem 3.25rem; background:var(--brand-subtle); border-radius:var(--r-md); margin-top:0.5rem; font-size:0.82rem; color:var(--brand);">
+          Phone number updated to <strong id="bannerPhone"></strong>.
         </div>
       </div>
 
-      <!-- Institution -->
+      <!-- Institution (read-only) -->
       <div class="settings-item" style="cursor:default;">
         <div class="settings-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -151,189 +144,261 @@
         </div>
       </div>
 
+      <!-- Password (editable) -->
+      <div class="settings-item" id="pwRow" style="cursor:default; flex-wrap:wrap; align-items:flex-start; padding-bottom:0.5rem;">
+        <div class="settings-icon" style="margin-top:0.1rem;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="settings-label" style="flex:1; min-width:0;">
+          <span>Password</span>
+          <small>••••••••</small>
+        </div>
+        <button class="btn-ghost" onclick="openPwEdit()" style="padding:0.3rem 0.6rem; font-size:0.78rem; flex-shrink:0;">Edit</button>
+
+        <!-- Inline edit panel -->
+        <div id="pwEditPanel" style="display:none; width:100%; padding:0.5rem 0 0.25rem 3.25rem;">
+          <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.5rem;">
+            <input id="pwCurrent" class="form-input no-icon" type="password" placeholder="Current password" autocomplete="current-password">
+            <input id="pwNew"     class="form-input no-icon" type="password" placeholder="New password (min. 6 chars)" autocomplete="new-password">
+            <input id="pwConfirm" class="form-input no-icon" type="password" placeholder="Confirm new password" autocomplete="new-password">
+          </div>
+          <div id="pwError" style="font-size:0.78rem; color:var(--red); margin-bottom:0.4rem; display:none;"></div>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn-sm" onclick="savePassword()">Save</button>
+            <button class="btn-ghost" onclick="cancelPwEdit()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Success banner -->
+        <div id="pwSuccessBanner" style="display:none; width:100%; padding:0.5rem 0.875rem 0.5rem 3.25rem; background:var(--green-bg); border-radius:var(--r-md); margin-top:0.5rem; font-size:0.82rem; color:var(--green-text);">
+          Password updated successfully.
+        </div>
+      </div>
+
     </div>
   </div>
 
   <!-- Ride History -->
   <div>
-    <div class="section-hd">
-      <h2>Ride History</h2>
-    </div>
-
+    <div class="section-hd"><h2>Ride History</h2></div>
     <div class="tabs" style="margin-bottom:1rem;">
-      <button class="tab active" id="tab-booked" onclick="switchTab('booked')">Booked (3)</button>
-      <button class="tab" id="tab-offered" onclick="switchTab('offered')">Offered (3)</button>
+      <button class="tab active" id="tab-booked"  onclick="switchTab('booked')">Booked (<span id="cnt-booked">0</span>)</button>
+      <button class="tab"        id="tab-offered" onclick="switchTab('offered')">Offered (<span id="cnt-offered">0</span>)</button>
     </div>
-
-    <div class="rides-list" id="panel-booked">
-      <div class="hist-card">
-        <div class="hist-top">
-          <div class="hist-driver">With Aarav Sharma</div>
-          <div class="hist-date">Apr 20, 2026</div>
-        </div>
-        <div class="hist-route">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/></svg>
-          BMS College → Lalbagh Botanical Garden
-        </div>
-        <div class="hist-footer">
-          <span class="hist-price">₹80</span>
-          <span class="status-badge completed">Completed</span>
-        </div>
-      </div>
-
-      <div class="hist-card">
-        <div class="hist-top">
-          <div class="hist-driver">With Rohan Patel</div>
-          <div class="hist-date">Apr 18, 2026</div>
-        </div>
-        <div class="hist-route">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/></svg>
-          National College → MG Road
-        </div>
-        <div class="hist-footer">
-          <span class="hist-price">₹120</span>
-          <span class="status-badge completed">Completed</span>
-        </div>
-      </div>
-
-      <div class="hist-card">
-        <div class="hist-top">
-          <div class="hist-driver">With Kabir Singh</div>
-          <div class="hist-date">Apr 15, 2026</div>
-        </div>
-        <div class="hist-route">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/></svg>
-          BMS College → Koramangala
-        </div>
-        <div class="hist-footer">
-          <span class="hist-price">₹90</span>
-          <span class="status-badge completed">Completed</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="rides-list" id="panel-offered" hidden>
-      <div class="hist-card">
-        <div class="hist-top">
-          <div class="hist-driver">To Ananya Iyer</div>
-          <div class="hist-date">Apr 22, 2026</div>
-        </div>
-        <div class="hist-route">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/></svg>
-          BMS College → VV Puram Food Street
-        </div>
-        <div class="hist-footer">
-          <span class="hist-price">₹50</span>
-          <span class="status-badge completed">Completed</span>
-        </div>
-      </div>
-
-      <div class="hist-card">
-        <div class="hist-top">
-          <div class="hist-driver">To Meera Nair</div>
-          <div class="hist-date">Apr 19, 2026</div>
-        </div>
-        <div class="hist-route">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/></svg>
-          National College → Cubbon Park
-        </div>
-        <div class="hist-footer">
-          <span class="hist-price">₹60</span>
-          <span class="status-badge completed">Completed</span>
-        </div>
-      </div>
-
-      <div class="hist-card">
-        <div class="hist-top">
-          <div class="hist-driver">To Isha Reddy</div>
-          <div class="hist-date">Apr 16, 2026</div>
-        </div>
-        <div class="hist-route">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/></svg>
-          BMS College → Brigade Road
-        </div>
-        <div class="hist-footer">
-          <span class="hist-price">₹70</span>
-          <span class="status-badge completed">Completed</span>
-        </div>
-      </div>
-    </div>
+    <div id="panel-booked"  class="rides-list"></div>
+    <div id="panel-offered" class="rides-list" hidden></div>
   </div>
 
   <!-- Log Out -->
   <div style="padding-bottom:0.5rem;">
-    <a href="login.html" class="btn-secondary" style="display:block; text-align:center; text-decoration:none;">Log Out</a>
+    <button class="btn-secondary" onclick="handleLogout()" style="display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+      Log Out
+    </button>
   </div>
 
 </main>
 
 <script>
-/* Tab switcher */
-function switchTab(tab) {
-  const booked  = document.getElementById('panel-booked');
-  const offered = document.getElementById('panel-offered');
-  booked.hidden  = tab !== 'booked';
-  offered.hidden = tab !== 'offered';
-  document.getElementById('tab-booked').className  = 'tab ' + (tab === 'booked'  ? 'active' : '');
-  document.getElementById('tab-offered').className = 'tab ' + (tab === 'offered' ? 'active' : '');
-}
+  if (!AUTH.requireAuth()) { /* redirected */ }
 
-/* Phone edit & validation */
-var CC_RE  = /^\+\d{1,3}$/;
-var NUM_RE = /^\d{10}$/;
+  var email   = AUTH.currentUser();
+  var account = AUTH.getAccount(email);
+  var name    = AUTH.displayName(email);
 
-function openPhoneEdit() {
-  var current = document.getElementById('phoneDisplay').textContent.trim();
-  var parts = current.split(' ');
-  var cc  = parts[0] || '';
-  var num = parts.slice(1).join('').replace(/\s/g, '');
-  document.getElementById('phoneCC').value  = cc;
-  document.getElementById('phoneNum').value = num;
-  clearError();
-  document.getElementById('phoneEditPanel').style.display = 'block';
-  document.getElementById('phoneVerifyBanner').style.display = 'none';
-  document.getElementById('phoneNum').focus();
-}
+  // Hero
+  document.getElementById('profileAvatar').textContent =
+    name.split(' ').map(function(w){ return w[0]; }).join('').slice(0,2).toUpperCase();
+  document.getElementById('profileName').firstChild.textContent = name + ' ';
+  document.getElementById('profileEmail').textContent  = email;
+  document.getElementById('accountEmail').textContent  = email;
 
-function cancelPhoneEdit() {
-  document.getElementById('phoneEditPanel').style.display = 'none';
-  clearError();
-}
-
-function showError(msg) {
-  var el = document.getElementById('phoneError');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-function clearError() {
-  var el = document.getElementById('phoneError');
-  el.textContent = '';
-  el.style.display = 'none';
-}
-
-function savePhone() {
-  clearError();
-  var cc  = document.getElementById('phoneCC').value.trim();
-  var num = document.getElementById('phoneNum').value.replace(/\s/g, '').trim();
-  var ok  = true;
-
-  if (!CC_RE.test(cc)) {
-    showError('Enter a valid country code — e.g. +91, +1 (+ followed by 1–3 digits).');
-    ok = false;
-  } else if (!NUM_RE.test(num)) {
-    showError('Phone number must be exactly 10 digits.');
-    ok = false;
+  // Phone — load saved value
+  if (account && account.phone) {
+    document.getElementById('phoneDisplay').textContent = account.phone;
   }
 
-  if (!ok) return;
+  function handleLogout() {
+    AUTH.logout();
+    window.location.href = 'login.html';
+  }
 
-  var formatted = cc + ' ' + num.slice(0, 5) + ' ' + num.slice(5);
-  document.getElementById('phoneDisplay').textContent = formatted;
-  document.getElementById('bannerPhone').textContent  = formatted;
-  document.getElementById('phoneVerifyBanner').style.display = 'block';
-  document.getElementById('phoneEditPanel').style.display    = 'none';
-}
+  /* ── Ride History ── */
+  function switchTab(tab) {
+    document.getElementById('panel-booked').hidden  = tab !== 'booked';
+    document.getElementById('panel-offered').hidden = tab !== 'offered';
+    document.getElementById('tab-booked').className  = 'tab ' + (tab === 'booked'  ? 'active' : '');
+    document.getElementById('tab-offered').className = 'tab ' + (tab === 'offered' ? 'active' : '');
+  }
+
+  function renderHistory() {
+    RIDES.getBookedBy(email, function (booked) {
+      document.getElementById('cnt-booked').textContent = booked.length;
+      var bPanel = document.getElementById('panel-booked');
+      bPanel.innerHTML = '';
+      if (booked.length === 0) {
+        bPanel.innerHTML = '<p style="text-align:center; color:var(--text-3); padding:2rem 0; font-size:0.88rem;">No booked rides yet.</p>';
+      } else {
+        booked.forEach(function (ride) { bPanel.appendChild(buildHistCard(ride, 'booked')); });
+      }
+    });
+
+    RIDES.getOfferedBy(email, function (offered) {
+      document.getElementById('cnt-offered').textContent = offered.length;
+      var oPanel = document.getElementById('panel-offered');
+      oPanel.innerHTML = '';
+      if (offered.length === 0) {
+        oPanel.innerHTML = '<p style="text-align:center; color:var(--text-3); padding:2rem 0; font-size:0.88rem;">No offered rides yet.</p>';
+      } else {
+        offered.forEach(function (ride) { oPanel.appendChild(buildHistCard(ride, 'offered')); });
+      }
+    });
+  }
+
+  function buildHistCard(ride, role) {
+    var div = document.createElement('div');
+    div.className = 'hist-card';
+
+    var seatsBooked = ride.bookedBy.length;
+    var seatsTotal  = parseInt(ride.seats);
+    var statusLabel = ride.status === 'full' ? 'Full' : ride.status === 'cancelled' ? 'Cancelled' : 'Open';
+    var statusClass = ride.status === 'full' ? 'completed' : ride.status === 'cancelled' ? 'cancelled' : 'pending';
+
+    var topLine, badge;
+    if (role === 'booked') {
+      var driverName = AUTH.displayName(ride.offeredBy);
+      topLine = 'With ' + RIDES.esc(driverName);
+      badge   = '<span class="status-badge completed">Booked</span>';
+    } else {
+      topLine = seatsBooked + '/' + seatsTotal + ' seat' + (seatsTotal !== 1 ? 's' : '') + ' booked';
+      badge   = '<span class="status-badge ' + statusClass + '">' + statusLabel + '</span>';
+    }
+
+    div.innerHTML =
+      '<div class="hist-top">' +
+        '<div class="hist-driver">' + topLine + '</div>' +
+        '<div class="hist-date">'   + RIDES.formatDT(ride.datetime) + '</div>' +
+      '</div>' +
+      '<div class="hist-route">' +
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/></svg>' +
+        RIDES.esc(ride.from) + ' → ' + RIDES.esc(ride.to) +
+      '</div>' +
+      '<div class="hist-footer">' +
+        '<span class="hist-price">₹' + RIDES.esc(String(ride.price || '—')) + '</span>' +
+        badge +
+      '</div>';
+
+    return div;
+  }
+
+  renderHistory();
+
+  /* ── Phone editing ── */
+  var CC_RE  = /^\+\d{1,3}$/;
+  var NUM_RE = /^\d{10}$/;
+
+  function openPhoneEdit() {
+    var current = document.getElementById('phoneDisplay').textContent.trim();
+    if (current !== 'Not set') {
+      var parts = current.split(' ');
+      document.getElementById('phoneCC').value  = parts[0] || '+91';
+      document.getElementById('phoneNum').value = parts.slice(1).join('').replace(/\s/g, '');
+    } else {
+      document.getElementById('phoneCC').value  = '+91';
+      document.getElementById('phoneNum').value = '';
+    }
+    clearPhoneError();
+    document.getElementById('phoneVerifyBanner').style.display = 'none';
+    document.getElementById('phoneEditPanel').style.display = 'block';
+    document.getElementById('phoneNum').focus();
+  }
+
+  function cancelPhoneEdit() {
+    document.getElementById('phoneEditPanel').style.display = 'none';
+    clearPhoneError();
+  }
+
+  function clearPhoneError() {
+    var el = document.getElementById('phoneError');
+    el.textContent = ''; el.style.display = 'none';
+  }
+
+  function savePhone() {
+    clearPhoneError();
+    var cc  = document.getElementById('phoneCC').value.trim();
+    var num = document.getElementById('phoneNum').value.replace(/\s/g, '').trim();
+    var ok  = true;
+
+    if (!CC_RE.test(cc)) {
+      document.getElementById('phoneError').textContent = 'Enter a valid country code (e.g. +91).';
+      document.getElementById('phoneError').style.display = 'block';
+      ok = false;
+    } else if (!NUM_RE.test(num)) {
+      document.getElementById('phoneError').textContent = 'Phone number must be exactly 10 digits.';
+      document.getElementById('phoneError').style.display = 'block';
+      ok = false;
+    }
+    if (!ok) return;
+
+    var formatted = cc + ' ' + num.slice(0,5) + ' ' + num.slice(5);
+    AUTH.updateAccount(email, { phone: formatted });
+    document.getElementById('phoneDisplay').textContent = formatted;
+    document.getElementById('bannerPhone').textContent  = formatted;
+    document.getElementById('phoneVerifyBanner').style.display = 'block';
+    document.getElementById('phoneEditPanel').style.display    = 'none';
+  }
+
+  /* ── Password editing ── */
+  function openPwEdit() {
+    document.getElementById('pwCurrent').value = '';
+    document.getElementById('pwNew').value     = '';
+    document.getElementById('pwConfirm').value = '';
+    clearPwError();
+    document.getElementById('pwSuccessBanner').style.display = 'none';
+    document.getElementById('pwEditPanel').style.display = 'block';
+    document.getElementById('pwCurrent').focus();
+  }
+
+  function cancelPwEdit() {
+    document.getElementById('pwEditPanel').style.display = 'none';
+    clearPwError();
+  }
+
+  function clearPwError() {
+    var el = document.getElementById('pwError');
+    el.textContent = ''; el.style.display = 'none';
+  }
+
+  function savePassword() {
+    clearPwError();
+    var current  = document.getElementById('pwCurrent').value;
+    var newPw    = document.getElementById('pwNew').value;
+    var confirm  = document.getElementById('pwConfirm').value;
+    var acc      = AUTH.getAccount(email);
+    var errEl    = document.getElementById('pwError');
+
+    if (acc.password !== current) {
+      errEl.textContent = 'Current password is incorrect.';
+      errEl.style.display = 'block';
+      document.getElementById('pwCurrent').value = '';
+      document.getElementById('pwCurrent').focus();
+      return;
+    }
+    if (newPw.length < 6) {
+      errEl.textContent = 'New password must be at least 6 characters.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (newPw !== confirm) {
+      errEl.textContent = 'Passwords do not match.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    AUTH.updateAccount(email, { password: newPw });
+    document.getElementById('pwSuccessBanner').style.display = 'block';
+    document.getElementById('pwEditPanel').style.display     = 'none';
+  }
 </script>
 
 <!-- Bottom Nav (mobile) -->

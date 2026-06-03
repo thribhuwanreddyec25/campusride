@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="style.css">
 <title>Campus Ride – Login</title>
+<script src="auth.js"></script>
 </head>
 <body>
 
 <div class="auth-page">
   <div class="auth-card">
 
-    <!-- Logo -->
     <div class="auth-logo">
       <div class="auth-logo-mark">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
@@ -20,52 +20,134 @@
       <div class="auth-tagline">Rides for students, by students</div>
     </div>
 
-    <h2 class="auth-title">Welcome back</h2>
-    <p class="auth-sub">Enter your college email address to continue</p>
+    <!-- Step 1: Email -->
+    <div id="stepEmail">
+      <h2 class="auth-title">Welcome</h2>
+      <p class="auth-sub">Enter your @bmsce.ac.in email to continue</p>
 
-    <form class="auth-form" onsubmit="handleLogin(event)">
-      <div class="auth-input-group">
-        <label class="auth-label" for="email">College Email</label>
-        <div class="input-wrap" style="display:flex; align-items:center; position:relative;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; left:0.875rem; color:var(--text-3); pointer-events:none; flex-shrink:0;"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          <input
-            id="email"
-            class="form-input"
-            type="email"
-            inputmode="email"
-            placeholder="yourname@college.ac.in"
-            autocomplete="email"
-            required
-            style="width:100%;"
-          >
+      <div class="msg-error" id="emailError"></div>
+
+      <form class="auth-form" onsubmit="handleEmailStep(event)">
+        <div class="auth-input-group">
+          <label class="auth-label" for="email">College Email</label>
+          <div class="input-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <input id="email" class="form-input" type="email" inputmode="email"
+              placeholder="yourname@bmsce.ac.in" autocomplete="email" required>
+          </div>
+          <small style="font-size:0.75rem; color:var(--text-3); margin-top:0.15rem;">Must end with @bmsce.ac.in</small>
         </div>
-        <small style="font-size:0.75rem; color:var(--text-3); margin-top:0.25rem;">Use your institutional email (e.g. @bmsce.ac.in)</small>
-      </div>
+        <button type="submit" class="btn-primary">
+          Continue
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </form>
+    </div>
 
-      <button type="submit" class="btn-primary">
-        Continue
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      </button>
-    </form>
+    <!-- Step 2: Password (existing user) -->
+    <div id="stepPassword" style="display:none;">
+      <h2 class="auth-title" id="pwTitle">Welcome back</h2>
+      <p class="auth-sub" id="pwSub">—</p>
 
-    <p class="auth-footer">
-      By continuing you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.<br>
-      New here? Your account is created automatically.
+      <div class="msg-error" id="pwError"></div>
+
+      <form class="auth-form" onsubmit="handlePasswordStep(event)">
+        <div class="auth-input-group">
+          <label class="auth-label" for="password">Password</label>
+          <div class="input-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input id="password" class="form-input" type="password"
+              placeholder="Your password" autocomplete="current-password" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">Sign In</button>
+      </form>
+      <p class="auth-footer" style="margin-top:0.75rem;">
+        <a href="#" onclick="backToEmail(); return false;">← Use a different email</a>
+      </p>
+    </div>
+
+    <p class="auth-footer" style="margin-top:1rem;">
+      By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
     </p>
 
   </div>
 </div>
 
 <script>
-function handleLogin(e) {
-  e.preventDefault();
-  const val = document.getElementById('email').value.trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
-    alert('Please enter a valid email address.');
-    return;
+  // If already logged in, skip to home
+  if (AUTH.currentUser()) {
+    window.location.href = 'index.html';
   }
-  window.location.href = 'otp.html';
-}
+
+  var resolvedEmail = '';
+
+  function showError(id, msg) {
+    var el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function clearError(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  function handleEmailStep(e) {
+    e.preventDefault();
+    clearError('emailError');
+
+    var raw = document.getElementById('email').value.trim();
+    var v = AUTH.validateEmail(raw);
+    if (!v.ok) { showError('emailError', v.error); return; }
+
+    var email = v.email;
+    var account = AUTH.getAccount(email);
+
+    if (account) {
+      // Existing user → password step
+      resolvedEmail = email;
+      var name = AUTH.displayName(email);
+      document.getElementById('pwTitle').textContent = 'Welcome back, ' + name.split(' ')[0] + '!';
+      document.getElementById('pwSub').textContent = email;
+      document.getElementById('stepEmail').style.display = 'none';
+      document.getElementById('stepPassword').style.display = 'block';
+      document.getElementById('password').focus();
+    } else {
+      // New user — check limit then send to OTP
+      var accounts = AUTH.getAccounts();
+      if (accounts.length >= AUTH.MAX_ACCOUNTS) {
+        showError('emailError',
+          'This device already has ' + AUTH.MAX_ACCOUNTS + ' accounts. Log into an existing one.');
+        return;
+      }
+      // Pass email via URL to OTP page
+      window.location.href = 'otp.html?email=' + encodeURIComponent(email);
+    }
+  }
+
+  function handlePasswordStep(e) {
+    e.preventDefault();
+    clearError('pwError');
+
+    var pw = document.getElementById('password').value;
+    var account = AUTH.getAccount(resolvedEmail);
+
+    if (!account || account.password !== pw) {
+      showError('pwError', 'Incorrect password. Try again.');
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+      return;
+    }
+
+    AUTH.login(resolvedEmail);
+    window.location.href = 'index.html';
+  }
+
+  function backToEmail() {
+    document.getElementById('stepPassword').style.display = 'none';
+    document.getElementById('stepEmail').style.display = 'block';
+    document.getElementById('email').focus();
+  }
 </script>
 
 </body>
