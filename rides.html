@@ -161,9 +161,6 @@
   var currentUser    = AUTH.currentUser();
   var _allAvailable  = [];   // cache for filter/sort
 
-  /* ── Seed example rides on every page load (idempotent) ── */
-  RIDES.seedExamples();
-
   /* ── Real-time listener ── */
   RIDES.onRidesChange(function (allRides) {
     _allAvailable = allRides.filter(function (r) {
@@ -229,6 +226,11 @@
         '<div class="ride-footer">' +
           '<span class="ride-price"><span class="currency">₹</span>' + RIDES.esc(String(ride.price || '—')) + '</span>' +
           '<div class="ride-seats"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ' + booked + '/' + total + ' booked</div>' +
+          (ride.status === 'cancelled'
+            ? '<span style="font-size:0.75rem;color:var(--text-3);">Cancelled</span>'
+            : RIDES.canCancel(ride.datetime)
+              ? '<button class="btn-cancel" onclick="cancelMyRide(\'' + ride.id + '\',this)">Cancel</button>'
+              : '<span style="font-size:0.75rem;color:var(--text-3);" title="Within 15 min of ride">Locked</span>') +
         '</div>';
       container.appendChild(card);
     });
@@ -306,6 +308,27 @@
   function updateCount() {
     var total = document.querySelectorAll('#live-rides-container .ride-card').length;
     document.getElementById('ride-count').textContent = total + ' ride' + (total !== 1 ? 's' : '');
+  }
+
+  /* ── Cancel your own ride ── */
+  function cancelMyRide(rideId, btn) {
+    if (!confirm('Cancel this ride? Bookers will lose their seats.')) return;
+    btn.textContent = '…'; btn.disabled = true;
+    RIDES.cancelRide(rideId, currentUser, function (r) {
+      if (r.ok) {
+        var card = btn.closest('.ride-card');
+        card.querySelector('.status-badge').textContent = 'Cancelled';
+        card.querySelector('.status-badge').className   = 'status-badge cancelled';
+        btn.replaceWith(Object.assign(document.createElement('span'), {
+          textContent: 'Cancelled', style: 'font-size:0.75rem;color:var(--text-3);'
+        }));
+      } else if (r.error === 'too_late') {
+        alert('Can\'t cancel within 15 minutes of the ride.');
+        btn.textContent = 'Cancel'; btn.disabled = false;
+      } else {
+        btn.textContent = 'Cancel'; btn.disabled = false;
+      }
+    });
   }
 
   /* ── Filter chips + dropdowns (all go through applyFilter) ── */

@@ -99,24 +99,53 @@ var RIDES = (function () {
     });
   }
 
-  // ── Seed example rides (idempotent — skips if key already exists) ──
-  function seedExamples() {
-    var tmr = new Date(); tmr.setDate(tmr.getDate() + 1);
-    function dt(h, m) { var d = new Date(tmr); d.setHours(h, m, 0, 0); return d.toISOString().slice(0, 16); }
-    var examples = [
-      { id: 'seed-arjun',  offeredBy: 'arjun.kumar@bmsce.ac.in',  from: 'BMS College, Bull Temple Rd', to: 'Jayanagar 4th Block',  datetime: dt(17,30), seats: 3, vehicle: 'auto', price: 45  },
-      { id: 'seed-priya',  offeredBy: 'priya.sharma@bmsce.ac.in', from: 'BMS College, Bull Temple Rd', to: 'Banashankari 2nd Stage', datetime: dt(18,15), seats: 2, vehicle: 'cab',  price: 70  },
-      { id: 'seed-ravi',   offeredBy: 'ravi.teja@bmsce.ac.in',    from: 'BMS College, Bull Temple Rd', to: 'Koramangala 5th Block', datetime: dt(16,45), seats: 1, vehicle: 'bike', price: 25  },
-    ];
-    examples.forEach(function (ride) {
-      ridesRef.child(ride.id).once('value', function (snap) {
-        if (!snap.exists()) {
-          ride.status   = 'open';
-          ride.bookedBy = {};
-          ride.postedAt = Date.now();
-          ridesRef.child(ride.id).set(ride);
-        }
-      });
+  // ── 15-min cutoff check ──────────────────────────────────────
+  function canCancel(datetime) {
+    return (new Date(datetime) - Date.now()) > 15 * 60 * 1000;
+  }
+
+  // ── Cancel a whole ride (offerer) ─────────────────────────────
+  function cancelRide(rideId, email, cb) {
+    ridesRef.child(rideId).transaction(function (ride) {
+      if (!ride) return ride;
+      if (ride.offeredBy !== email)  return;               // not your ride
+      if (!canCancel(ride.datetime)) return;               // <15 min away
+      ride.status = 'cancelled';
+      return ride;
+    }, function (err, committed, snap) {
+      if (err) { cb({ ok: false, error: 'error' }); return; }
+      if (!committed) {
+        var raw = snap && snap.val();
+        if (!raw) { cb({ ok: false, error: 'not_found' }); return; }
+        if (!canCancel(raw.datetime)) { cb({ ok: false, error: 'too_late' }); return; }
+        cb({ ok: false, error: 'aborted' });
+        return;
+      }
+      cb({ ok: true });
+    });
+  }
+
+  // ── Cancel a booking (booker removes themselves) ──────────────
+  function cancelBooking(rideId, email, cb) {
+    ridesRef.child(rideId).transaction(function (ride) {
+      if (!ride) return ride;
+      if (!canCancel(ride.datetime)) return;               // <15 min away
+      if (!ride.bookedBy) return ride;
+      var key = encKey(email);
+      if (!ride.bookedBy[key]) return ride;               // not booked
+      delete ride.bookedBy[key];
+      if (ride.status === 'full') ride.status = 'open';   // free up seat
+      return ride;
+    }, function (err, committed, snap) {
+      if (err) { cb({ ok: false, error: 'error' }); return; }
+      if (!committed) {
+        var raw = snap && snap.val();
+        if (!raw) { cb({ ok: false, error: 'not_found' }); return; }
+        if (!canCancel(raw.datetime)) { cb({ ok: false, error: 'too_late' }); return; }
+        cb({ ok: false, error: 'aborted' });
+        return;
+      }
+      cb({ ok: true });
     });
   }
 
@@ -185,10 +214,12 @@ var RIDES = (function () {
   return {
     add:              add,
     book:             book,
+    canCancel:        canCancel,
+    cancelRide:       cancelRide,
+    cancelBooking:    cancelBooking,
     onRidesChange:    onRidesChange,
     getOfferedBy:     getOfferedBy,
     getBookedBy:      getBookedBy,
-    seedExamples:     seedExamples,
     formatDT:         formatDT,
     cap:              cap,
     esc:              esc,

@@ -274,6 +274,19 @@
       badge   = '<span class="status-badge ' + statusClass + '">' + statusLabel + '</span>';
     }
 
+    var cancelBtn = '';
+    if (ride.status !== 'cancelled') {
+      if (RIDES.canCancel(ride.datetime)) {
+        if (role === 'booked') {
+          cancelBtn = '<button class="btn-cancel" onclick="cancelMyBooking(\'' + ride.id + '\',this)">Cancel</button>';
+        } else {
+          cancelBtn = '<button class="btn-cancel" onclick="cancelMyOfferedRide(\'' + ride.id + '\',this)">Cancel</button>';
+        }
+      } else {
+        cancelBtn = '<span style="font-size:0.75rem;color:var(--text-3);" title="Within 15 min of ride">Locked</span>';
+      }
+    }
+
     div.innerHTML =
       '<div class="hist-top">' +
         '<div class="hist-driver">' + topLine + '</div>' +
@@ -286,9 +299,40 @@
       '<div class="hist-footer">' +
         '<span class="hist-price">₹' + RIDES.esc(String(ride.price || '—')) + '</span>' +
         badge +
+        cancelBtn +
       '</div>';
 
     return div;
+  }
+
+  function cancelMyBooking(rideId, btn) {
+    if (!confirm('Cancel your booking for this ride?')) return;
+    btn.textContent = '…'; btn.disabled = true;
+    RIDES.cancelBooking(rideId, email, function (r) {
+      if (r.ok) {
+        btn.closest('.hist-card').querySelector('.status-badge').textContent = 'Cancelled';
+        btn.replaceWith(Object.assign(document.createElement('span'), { textContent: 'Cancelled', style: 'font-size:0.75rem;color:var(--text-3);' }));
+        renderHistory();
+      } else if (r.error === 'too_late') {
+        alert('Can\'t cancel within 15 minutes of the ride.');
+        btn.textContent = 'Cancel'; btn.disabled = false;
+      } else { btn.textContent = 'Cancel'; btn.disabled = false; }
+    });
+  }
+
+  function cancelMyOfferedRide(rideId, btn) {
+    if (!confirm('Cancel this ride? Bookers will lose their seats.')) return;
+    btn.textContent = '…'; btn.disabled = true;
+    RIDES.cancelRide(rideId, email, function (r) {
+      if (r.ok) {
+        btn.closest('.hist-card').querySelector('.status-badge').textContent = 'Cancelled';
+        btn.replaceWith(Object.assign(document.createElement('span'), { textContent: 'Cancelled', style: 'font-size:0.75rem;color:var(--text-3);' }));
+        renderHistory();
+      } else if (r.error === 'too_late') {
+        alert('Can\'t cancel within 15 minutes of the ride.');
+        btn.textContent = 'Cancel'; btn.disabled = false;
+      } else { btn.textContent = 'Cancel'; btn.disabled = false; }
+    });
   }
 
   renderHistory();

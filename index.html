@@ -203,11 +203,29 @@
         '<div class="ride-footer">' +
           '<span class="ride-price"><span class="currency">₹</span>' + RIDES.esc(String(ride.price || '—')) + '</span>' +
           '<div class="ride-seats"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ' + seatsLeft + ' seat' + (seatsLeft !== 1 ? 's' : '') + ' left</div>' +
-          '<span class="status-badge completed">Booked</span>' +
+          (RIDES.canCancel(ride.datetime)
+            ? '<button class="btn-cancel" onclick="cancelUpcomingBooking(\'' + ride.id + '\',this)">Cancel</button>'
+            : '<span class="status-badge completed">Booked</span>') +
         '</div>';
       list.appendChild(card);
     });
   });
+
+  function cancelUpcomingBooking(rideId, btn) {
+    if (!confirm('Cancel your booking for this ride?')) return;
+    btn.textContent = '…'; btn.disabled = true;
+    RIDES.cancelBooking(rideId, user, function (r) {
+      if (r.ok) {
+        btn.closest('.ride-card').remove();
+        var remaining = document.querySelectorAll('#bookings-list .ride-card').length;
+        document.getElementById('bookings-tag').textContent = remaining + ' upcoming';
+        if (remaining === 0) document.getElementById('no-bookings').style.display = 'block';
+      } else if (r.error === 'too_late') {
+        alert('Can\'t cancel within 15 minutes of the ride.');
+        btn.textContent = 'Cancel'; btn.disabled = false;
+      } else { btn.textContent = 'Cancel'; btn.disabled = false; }
+    });
+  }
 
   function postRideHome(e) {
     e.preventDefault();

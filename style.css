@@ -536,6 +536,20 @@ h4 { font-size: 0.875rem; font-weight: 600; }
 
 .btn-book:active { transform: none; box-shadow: none; }
 
+.btn-cancel {
+  padding: 0.4rem 0.85rem;
+  background: transparent;
+  color: #e05555;
+  border: 1px solid #e05555;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--t), color var(--t);
+}
+.btn-cancel:hover  { background: #e05555; color: #fff; }
+.btn-cancel:active { opacity: 0.8; }
+
 /* ── Rating ───────────────────────────────────────────────── */
 .rating {
   display: inline-flex;
