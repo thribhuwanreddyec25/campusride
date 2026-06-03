@@ -160,20 +160,12 @@
   AUTH.requireAuth();
   var currentUser    = AUTH.currentUser();
   var _allAvailable  = [];   // cache for filter/sort
-  var _seeded        = false; // prevent double-seed
+
+  /* ── Seed example rides on every page load (idempotent) ── */
+  RIDES.seedExamples();
 
   /* ── Real-time listener ── */
   RIDES.onRidesChange(function (allRides) {
-    // Seed 2 example rides the very first time the DB is empty
-    if (allRides.length === 0 && !_seeded) {
-      _seeded = true;
-      var tmr = new Date(); tmr.setDate(tmr.getDate() + 1);
-      function dt(h, m) { var d = new Date(tmr); d.setHours(h, m, 0, 0); return d.toISOString().slice(0, 16); }
-      RIDES.add({ offeredBy: 'arjun.kumar@bmsce.ac.in',  from: 'BMS College', to: 'Jayanagar',    datetime: dt(17,30), seats: 3, vehicle: 'auto', price: 45 });
-      RIDES.add({ offeredBy: 'priya.sharma@bmsce.ac.in', from: 'BMS College', to: 'Banashankari', datetime: dt(18,15), seats: 2, vehicle: 'cab',  price: 70 });
-      return; // listener will fire again with the seeded data
-    }
-
     _allAvailable = allRides.filter(function (r) {
       return r.offeredBy !== currentUser && r.status !== 'cancelled';
     });

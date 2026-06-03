@@ -99,6 +99,27 @@ var RIDES = (function () {
     });
   }
 
+  // ── Seed example rides (idempotent — skips if key already exists) ──
+  function seedExamples() {
+    var tmr = new Date(); tmr.setDate(tmr.getDate() + 1);
+    function dt(h, m) { var d = new Date(tmr); d.setHours(h, m, 0, 0); return d.toISOString().slice(0, 16); }
+    var examples = [
+      { id: 'seed-arjun',  offeredBy: 'arjun.kumar@bmsce.ac.in',  from: 'BMS College, Bull Temple Rd', to: 'Jayanagar 4th Block',  datetime: dt(17,30), seats: 3, vehicle: 'auto', price: 45  },
+      { id: 'seed-priya',  offeredBy: 'priya.sharma@bmsce.ac.in', from: 'BMS College, Bull Temple Rd', to: 'Banashankari 2nd Stage', datetime: dt(18,15), seats: 2, vehicle: 'cab',  price: 70  },
+      { id: 'seed-ravi',   offeredBy: 'ravi.teja@bmsce.ac.in',    from: 'BMS College, Bull Temple Rd', to: 'Koramangala 5th Block', datetime: dt(16,45), seats: 1, vehicle: 'bike', price: 25  },
+    ];
+    examples.forEach(function (ride) {
+      ridesRef.child(ride.id).once('value', function (snap) {
+        if (!snap.exists()) {
+          ride.status   = 'open';
+          ride.bookedBy = {};
+          ride.postedAt = Date.now();
+          ridesRef.child(ride.id).set(ride);
+        }
+      });
+    });
+  }
+
   // ── One-shot reads ────────────────────────────────────────────
   function getOfferedBy(email, cb) {
     ridesRef.once('value', function (snap) {
@@ -167,6 +188,7 @@ var RIDES = (function () {
     onRidesChange:    onRidesChange,
     getOfferedBy:     getOfferedBy,
     getBookedBy:      getBookedBy,
+    seedExamples:     seedExamples,
     formatDT:         formatDT,
     cap:              cap,
     esc:              esc,
