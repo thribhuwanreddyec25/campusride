@@ -228,7 +228,7 @@
           '<div class="ride-seats"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ' + booked + '/' + total + ' booked</div>' +
           (ride.status === 'cancelled'
             ? '<span style="font-size:0.75rem;color:var(--text-3);">Cancelled</span>'
-            : RIDES.canCancel(ride.datetime)
+            : (new Date(ride.datetime) - Date.now() > 15 * 60 * 1000)
               ? '<button class="btn-cancel" onclick="cancelMyRide(\'' + ride.id + '\',this)">Cancel</button>'
               : '<span style="font-size:0.75rem;color:var(--text-3);" title="Within 15 min of ride">Locked</span>') +
         '</div>';

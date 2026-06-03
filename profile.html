@@ -276,7 +276,7 @@
 
     var cancelBtn = '';
     if (ride.status !== 'cancelled') {
-      if (RIDES.canCancel(ride.datetime)) {
+      if (new Date(ride.datetime) - Date.now() > 15 * 60 * 1000) {
         if (role === 'booked') {
           cancelBtn = '<button class="btn-cancel" onclick="cancelMyBooking(\'' + ride.id + '\',this)">Cancel</button>';
         } else {
