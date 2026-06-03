@@ -142,14 +142,33 @@ var RIDES = (function () {
   function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
   function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
+  // ── Swap the SVG icon next to a vehicle <select> ──────────────
+  var _CAB  = '<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/>';
+  var _AUTO = '<g transform="scale(-1,1) translate(-72,0)"><circle cx="54" cy="38" r="8"/><circle cx="54" cy="38" r="3"/><circle cx="12" cy="38" r="6"/><circle cx="12" cy="38" r="2"/><path d="M20 36 L20 14 Q22 4 34 3 L54 3 Q62 6 62 14 L62 36 Z"/><line x1="20" y1="14" x2="27" y2="3"/><rect x="34" y="8" width="18" height="13" rx="2"/><path d="M20 32 L14 30 L12 32"/><path d="M15 22 Q18 19 22 20"/></g>';
+  var _BIKE = '<g transform="scale(-1,1) translate(-72,0)"><circle cx="54" cy="36" r="10"/><circle cx="54" cy="36" r="3.5"/><circle cx="16" cy="36" r="10"/><circle cx="16" cy="36" r="3.5"/><line x1="16" y1="26" x2="24" y2="12"/><path d="M22 12 L30 10 L32 13"/><path d="M30 10 L34 26 L46 26 L54 28"/><path d="M30 26 L28 16 L48 14 L52 22 L46 26"/><path d="M34 28 L34 36 L46 36 L46 28 Z"/><path d="M46 34 L58 36"/></g>';
+
+  function swapVehicleIcon(svgId, value) {
+    var el = document.getElementById(svgId);
+    if (!el) return;
+    var base = ' fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"';
+    var map = {
+      all:  '<svg id="' + svgId + '" width="16" height="16" viewBox="0 0 24 24"' + base + ' stroke-width="2">'  + _CAB  + '</svg>',
+      cab:  '<svg id="' + svgId + '" width="16" height="16" viewBox="0 0 24 24"' + base + ' stroke-width="2">'  + _CAB  + '</svg>',
+      auto: '<svg id="' + svgId + '" width="20" height="14" viewBox="0 0 72 48"' + base + ' stroke-width="2.2">' + _AUTO + '</svg>',
+      bike: '<svg id="' + svgId + '" width="20" height="14" viewBox="0 0 72 48"' + base + ' stroke-width="2.2">' + _BIKE + '</svg>',
+    };
+    el.outerHTML = map[value] || map['all'];
+  }
+
   return {
-    add:           add,
-    book:          book,
-    onRidesChange: onRidesChange,
-    getOfferedBy:  getOfferedBy,
-    getBookedBy:   getBookedBy,
-    formatDT:      formatDT,
-    cap:           cap,
-    esc:           esc,
+    add:              add,
+    book:             book,
+    onRidesChange:    onRidesChange,
+    getOfferedBy:     getOfferedBy,
+    getBookedBy:      getBookedBy,
+    formatDT:         formatDT,
+    cap:              cap,
+    esc:              esc,
+    swapVehicleIcon:  swapVehicleIcon,
   };
 })();
