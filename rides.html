@@ -539,13 +539,16 @@
 
     var actions = '';
     if (!isMine && booked && waDigits && !past && r.status !== 'cancelled') {
-      actions += '<div class="contact">' +
-        '<div class="contact__hd"><span class="contact__who">' + UI.esc(AUTH.rideFirstName(r)) + '’s number</span>' +
-          '<a class="contact__num" href="tel:+' + waDigits + '">' + UI.esc(r.phone) + '</a></div>' +
-        '<div class="contact__btns">' +
-          '<button type="button" class="btn btn--wa" data-act="wa">' + UI.icon('phone') + ' WhatsApp</button>' +
-          '<a class="btn btn--soft" href="tel:+' + waDigits + '">' + UI.icon('phone') + ' Call</a>' +
-        '</div></div>';
+      actions += '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:0.9rem 1rem;display:flex;flex-direction:column;gap:0.75rem;">' +
+        '<div style="display:flex;flex-direction:column;gap:0.25rem;">' +
+          '<span style="font-size:0.72rem;color:var(--text-3);letter-spacing:0.05em;text-transform:uppercase;">' + UI.esc(AUTH.rideFirstName(r)) + '’s number</span>' +
+          '<a href="tel:+' + waDigits + '" style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-1);text-decoration:none;letter-spacing:0.01em;">' + UI.esc(r.phone) + '</a>' +
+        '</div>' +
+        '<div style="display:flex;gap:0.5rem;">' +
+          '<button type="button" class="btn btn--wa" data-act="wa" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;">' + UI.icon('phone') + ' WhatsApp</button>' +
+          '<a class="btn btn--soft" href="tel:+' + waDigits + '" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;text-decoration:none;">' + UI.icon('phone') + ' Call</a>' +
+        '</div>' +
+      '</div>';
     }
     if (!isMine && booked && !waDigits) {
       actions += '<p class="hint" style="text-align:center;">' + UI.esc(AUTH.rideFirstName(r)) + ' hasn’t added a phone number yet.</p>';

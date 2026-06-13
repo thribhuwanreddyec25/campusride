@@ -552,29 +552,6 @@ input::-webkit-calendar-picker-indicator { opacity: 0.55; filter: invert(0.7); c
 }
 .hint { font-size: 0.75rem; color: var(--text-3); }
 
-/* ── Contact card (shown after booking) ─────────────────────────── */
-.contact {
-  background: var(--bg2);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 0.85rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-.contact__hd { display: flex; flex-direction: column; gap: 0.15rem; }
-.contact__who { font-size: 0.74rem; color: var(--text-3); }
-.contact__num {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text-1);
-  letter-spacing: 0.01em;
-}
-.contact__num:hover { color: var(--accent-text); }
-.contact__btns { display: flex; gap: 0.5rem; }
-.contact__btns .btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; }
-
 /* ── Chips ──────────────────────────────────────────────────────── */
 .chip-row {
   display: flex;
