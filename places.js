@@ -46,7 +46,7 @@ var PLACES = (function () {
      (metro stations, terminals, landmarks). Area entries are
      centroids by design; picks are background-refined via Photon. */
   var CAMPUS = [
-    ['BMSCE Main Gate', 'Bull Temple Rd', 12.9418, 77.5662],
+    ['BMSCE Main Gate', 'Bull Temple Rd', 12.94162, 77.56681],
     ['BMSCE Gate 2', 'Basavanagudi', 12.9405, 77.5662],
     ['BMS College Hostel', 'Basavanagudi', 12.9398, 77.5648],
     ['Bull Temple (Dodda Basavana Gudi)', 'Basavanagudi', 12.9430, 77.5683],

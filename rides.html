@@ -333,7 +333,7 @@
   }
 
   function buildCard(r) {
-    var name      = AUTH.rideName(r);
+    var name      = (r.offeredBy === me) ? AUTH.myDisplayName() : AUTH.rideName(r);
     var seatsLeft = Math.max(0, (+r.seats) - r.bookedBy.length);
     var booked    = r.bookedBy.indexOf(me) !== -1;
     var full      = seatsLeft <= 0;
@@ -539,7 +539,13 @@
 
     var actions = '';
     if (!isMine && booked && waDigits && !past && r.status !== 'cancelled') {
-      actions += '<button type="button" class="btn btn--wa btn--block" data-act="wa">' + UI.icon('phone') + ' WhatsApp ' + UI.esc(AUTH.rideFirstName(r)) + '</button>';
+      actions += '<div class="contact">' +
+        '<div class="contact__hd"><span class="contact__who">' + UI.esc(AUTH.rideFirstName(r)) + '’s number</span>' +
+          '<a class="contact__num" href="tel:+' + waDigits + '">' + UI.esc(r.phone) + '</a></div>' +
+        '<div class="contact__btns">' +
+          '<button type="button" class="btn btn--wa" data-act="wa">' + UI.icon('phone') + ' WhatsApp</button>' +
+          '<a class="btn btn--soft" href="tel:+' + waDigits + '">' + UI.icon('phone') + ' Call</a>' +
+        '</div></div>';
     }
     if (!isMine && booked && !waDigits) {
       actions += '<p class="hint" style="text-align:center;">' + UI.esc(AUTH.rideFirstName(r)) + ' hasn’t added a phone number yet.</p>';
@@ -598,10 +604,14 @@
           }, 'Ride details copied');
         }
         if (act === 'book') {
-          UI.closeSheet('detailOverlay');
           RIDES.book(r.id, me, function (res) {
-            if (res.ok) UI.toast('Seat booked — see you there!', 'success');
-            else UI.toast(res.error === 'full' ? 'Just filled up — try another' : 'Could not book — try again', 'error');
+            if (res.ok) {
+              UI.toast('Seat booked — contact details below', 'success');
+              setTimeout(function () { openDetail(r.id); }, 250);   // re-render with contact info
+            } else {
+              UI.closeSheet('detailOverlay');
+              UI.toast(res.error === 'full' ? 'Just filled up — try another' : 'Could not book — try again', 'error');
+            }
           });
         }
         if (act === 'cancelbooking') {
