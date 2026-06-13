@@ -584,13 +584,13 @@
         '<div class="route__stop"><small>To' + (r.toLat ? PINM : '') + '</small>' + UI.esc(r.to) + '</div>' +
       '</div>' +
       '<div class="detail-map" id="detailMapR"></div>' +
-      '<div class="detail__facts">' +
+      '<div class="detail__facts" style="margin-bottom:0.9rem;">' +
         '<div class="fact"><small>When</small><span>' + RIDES.formatDT(r.datetime) + '</span></div>' +
         '<div class="fact"><small>Vehicle</small><span>' + RIDES.cap(r.vehicle || 'cab') + '</span></div>' +
         '<div class="fact"><small>Price / seat</small><span>₹' + UI.esc(String(r.price || '—')) + '</span></div>' +
         '<div class="fact"><small>Status</small><span>' + status + '</span></div>' +
       '</div>' +
-      '<div class="detail__actions">' + actions + '</div>';
+      '<div class="detail__actions" style="margin-top:0;gap:0.9rem;">' + actions + '</div>';
 
     var body = document.getElementById('detailBody');
     body.querySelectorAll('[data-act]').forEach(function (btn) {
