@@ -77,12 +77,12 @@
 }
 
 [data-theme="light"] {
-  --bg0: #f4f2ec;
-  --bg1: #ffffff;
-  --bg2: #ffffff;
-  --bg3: #eeebe2;
-  --line: rgba(25, 22, 35, 0.1);
-  --line-strong: rgba(25, 22, 35, 0.2);
+  --bg0: #ece8df;   /* page — warm light grey, so cards lift off it */
+  --bg1: #f7f4ef;   /* containers: cards, sheets, nav surfaces */
+  --bg2: #ffffff;   /* inner: facts, inputs, ride cards — clean white */
+  --bg3: #e6e1d6;
+  --line: rgba(25, 22, 35, 0.14);
+  --line-strong: rgba(25, 22, 35, 0.24);
 
   --text-1: #17151f;
   --text-2: #4f4c60;

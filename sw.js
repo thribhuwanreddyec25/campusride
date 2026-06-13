@@ -3,7 +3,7 @@
 // stale-while-revalidate for same-origin statics.
 // Bump CACHE version on every deploy to invalidate old assets.
 
-var CACHE = 'campusride-v3.1.3';
+var CACHE = 'campusride-v3.1.4';
 
 var CORE = [
   './',
