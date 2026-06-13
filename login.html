@@ -2,152 +2,285 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a12">
+<meta name="description" content="CampusRide — share rides with verified BMSCE students. Split fares on autos, cabs and bikes.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>CampusRide – Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<title>Campus Ride – Login</title>
+<script>
+  /* pre-paint theme — prevents flash */
+  (function () {
+    try {
+      var t = localStorage.getItem('cr-theme');
+      var light = t === 'light' || (!t && matchMedia('(prefers-color-scheme: light)').matches);
+      if (light) document.documentElement.setAttribute('data-theme', 'light');
+    } catch (_) {}
+  })();
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="firebase-init.js"></script>
 <script src="auth.js"></script>
+<script src="ui.js"></script>
 </head>
 <body>
 
-<div class="auth-page">
-  <div class="auth-card">
+<div class="auth">
 
-    <div class="auth-logo">
-      <div class="auth-logo-mark">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+  <!-- Brand pane -->
+  <aside class="auth__brandpane">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+      <a class="brand" href="login.html" aria-label="CampusRide">
+        <span class="brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6.4" cy="17.6" r="2.7"/><line x1="8.7" y1="15.3" x2="15.3" y2="8.7"/><circle cx="17.6" cy="6.4" r="2.7"/></svg>
+        </span>
+        CampusRide
+      </a>
+      <button type="button" class="theme-btn" data-theme-toggle aria-label="Toggle theme" aria-pressed="false">
+        <span class="i-moon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+        <span class="i-sun"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+
+    <h1 class="auth__tagline reveal" style="--i:1">Split the fare.<br>Share the <em>ride.</em></h1>
+
+    <div class="auth__points">
+      <div class="auth__point reveal" style="--i:2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+        <div><strong>Verified BMSCE students only</strong><span>Real email verification — every rider proves their college inbox.</span></div>
       </div>
-      <div class="auth-brand">Campus Ride</div>
-      <div class="auth-tagline">Rides for students, by students</div>
+      <div class="auth__point reveal" style="--i:3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        <div><strong>Live seats, zero refresh</strong><span>Rides update in real time the moment someone posts or books.</span></div>
+      </div>
+      <div class="auth__point reveal" style="--i:4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.667 0 6.667-10 0-10"/></svg>
+        <div><strong>Zero commission</strong><span>Whatever you agree is what you pay. Students helping students.</span></div>
+      </div>
     </div>
+  </aside>
 
-    <!-- Step 1: Email -->
-    <div id="stepEmail">
-      <h2 class="auth-title">Welcome</h2>
-      <p class="auth-sub">Enter your @bmsce.ac.in email to continue</p>
+  <!-- Form pane -->
+  <main class="auth__formpane">
+    <div class="auth-card reveal" style="--i:2">
+      <div class="card">
 
-      <div class="msg-error" id="emailError"></div>
-
-      <form class="auth-form" onsubmit="handleEmailStep(event)">
-        <div class="auth-input-group">
-          <label class="auth-label" for="email">College Email</label>
-          <div class="input-wrap">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            <input id="email" class="form-input" type="email" inputmode="email"
-              placeholder="yourname@bmsce.ac.in" autocomplete="email" required>
-          </div>
-          <small style="font-size:0.75rem; color:var(--text-3); margin-top:0.15rem;">Must end with @bmsce.ac.in</small>
+        <div class="tabs" role="tablist" style="margin-bottom:1.25rem;">
+          <button class="tab active" id="tabIn" role="tab" aria-selected="true" onclick="switchMode('in')">Sign in</button>
+          <button class="tab" id="tabUp" role="tab" aria-selected="false" onclick="switchMode('up')">Create account</button>
         </div>
-        <button type="submit" class="btn-primary">
-          Continue
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </button>
-      </form>
-    </div>
 
-    <!-- Step 2: Password (existing user) -->
-    <div id="stepPassword" style="display:none;">
-      <h2 class="auth-title" id="pwTitle">Welcome back</h2>
-      <p class="auth-sub" id="pwSub">—</p>
+        <!-- Sign in -->
+        <div id="paneIn" role="tabpanel">
+          <h2 class="auth-title">Welcome back</h2>
+          <p class="auth-sub">Sign in with your <strong>@bmsce.ac.in</strong> account.</p>
 
-      <div class="msg-error" id="pwError"></div>
+          <div class="msg-error" id="inError" role="alert"></div>
 
-      <form class="auth-form" onsubmit="handlePasswordStep(event)">
-        <div class="auth-input-group">
-          <label class="auth-label" for="password">Password</label>
-          <div class="input-wrap">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <input id="password" class="form-input" type="password"
-              placeholder="Your password" autocomplete="current-password" required>
-          </div>
+          <form class="auth-form" onsubmit="handleSignIn(event)" novalidate>
+            <div class="field">
+              <label class="field__label" for="inEmail">College email</label>
+              <div class="field__wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <input id="inEmail" class="input" type="email" inputmode="email" placeholder="yourname@bmsce.ac.in" autocomplete="email" required>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="inPw">Password</label>
+              <div class="field__wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input id="inPw" class="input" type="password" style="padding-right:3.4rem;" placeholder="Your password" autocomplete="current-password" required>
+                <button type="button" onclick="peek('inPw', this)" aria-label="Show password" aria-pressed="false"
+                  style="position:absolute; right:8px; padding:0.35rem 0.6rem; font-size:0.72rem; font-weight:700; color:var(--text-3); border-radius:8px;">SHOW</button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn--primary btn--block" id="inBtn">Sign in</button>
+          </form>
         </div>
-        <button type="submit" class="btn-primary">Sign In</button>
-      </form>
-      <p class="auth-footer" style="margin-top:0.75rem;">
-        <a href="#" onclick="backToEmail(); return false;">← Use a different email</a>
-      </p>
+
+        <!-- Sign up -->
+        <div id="paneUp" role="tabpanel" class="hidden">
+          <h2 class="auth-title">Hop in</h2>
+          <p class="auth-sub">BMSCE students only — we'll verify your college inbox.</p>
+
+          <div class="msg-error" id="upError" role="alert"></div>
+
+          <form class="auth-form" onsubmit="handleSignUp(event)" novalidate>
+            <div class="field">
+              <label class="field__label" for="upEmail">College email</label>
+              <div class="field__wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <input id="upEmail" class="input" type="email" inputmode="email" placeholder="yourname@bmsce.ac.in" autocomplete="email" required>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="upNum">WhatsApp number</label>
+              <div style="display:flex; gap:0.5rem;">
+                <input id="upCC" class="input input--plain" type="text" value="+91" maxlength="5" aria-label="Country code" style="width:76px; flex-shrink:0;">
+                <input id="upNum" class="input input--plain" type="tel" inputmode="numeric" placeholder="10-digit number" maxlength="10" aria-label="Phone number" required>
+              </div>
+              <span class="hint">Shown only to students who book your ride.</span>
+            </div>
+            <div class="field">
+              <label class="field__label" for="upPw">Password</label>
+              <div class="field__wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input id="upPw" class="input" type="password" style="padding-right:3.4rem;" placeholder="Min. 6 characters" autocomplete="new-password" required oninput="scorePw()">
+                <button type="button" onclick="peek('upPw', this)" aria-label="Show password" aria-pressed="false"
+                  style="position:absolute; right:8px; padding:0.35rem 0.6rem; font-size:0.72rem; font-weight:700; color:var(--text-3); border-radius:8px;">SHOW</button>
+              </div>
+              <div class="pw-meter" id="pwMeter" data-score="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="field">
+              <label class="field__label" for="upPw2">Confirm password</label>
+              <div class="field__wrap">
+                <span class="match-ic" id="matchIc" aria-hidden="true">
+                  <svg class="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                  <svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </span>
+                <input id="upPw2" class="input" type="password" placeholder="Repeat password" autocomplete="new-password" required
+                  oninput="checkMatch()">
+              </div>
+            </div>
+            <button type="submit" class="btn btn--primary btn--block" id="upBtn">
+              Create account
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </form>
+        </div>
+
+        <p class="auth-foot" style="margin-top:1.25rem;">
+          By continuing you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.
+        </p>
+
+      </div>
     </div>
-
-    <p class="auth-footer" style="margin-top:1rem;">
-      By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
-    </p>
-
-  </div>
+  </main>
 </div>
 
 <script>
-  // If already logged in, skip to home
-  if (AUTH.currentUser()) {
-    window.location.href = 'index.html';
-  }
+  // Already signed in? Go straight to the app.
+  AUTH.ready(function (u) {
+    if (u) window.location.href = 'index.html';
+  });
 
-  var resolvedEmail = '';
+  function switchMode(m) {
+    var isIn = m === 'in';
+    document.getElementById('paneIn').classList.toggle('hidden', !isIn);
+    document.getElementById('paneUp').classList.toggle('hidden', isIn);
+    document.getElementById('tabIn').className = 'tab' + (isIn ? ' active' : '');
+    document.getElementById('tabUp').className = 'tab' + (!isIn ? ' active' : '');
+    document.getElementById('tabIn').setAttribute('aria-selected', String(isIn));
+    document.getElementById('tabUp').setAttribute('aria-selected', String(!isIn));
+    (isIn ? document.getElementById('inEmail') : document.getElementById('upEmail')).focus();
+  }
 
   function showError(id, msg) {
     var el = document.getElementById(id);
     el.textContent = msg;
     el.style.display = 'block';
   }
+  function clearError(id) { document.getElementById(id).style.display = 'none'; }
 
-  function clearError(id) {
-    document.getElementById(id).style.display = 'none';
+  function peek(inputId, btn) {
+    var inp = document.getElementById(inputId);
+    var show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.textContent = show ? 'HIDE' : 'SHOW';
+    btn.setAttribute('aria-pressed', String(show));
+    btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
   }
 
-  function handleEmailStep(e) {
+  function scorePw() {
+    var v = document.getElementById('upPw').value;
+    var s = 0;
+    if (v.length >= 6) s++;
+    if (v.length >= 10) s++;
+    if (/[a-z]/.test(v) && /[A-Z0-9]/.test(v)) s++;
+    if (/[^a-zA-Z0-9]/.test(v)) s++;
+    document.getElementById('pwMeter').setAttribute('data-score', String(s));
+    checkMatch();   // editing the first field can make/break the match
+  }
+
+  /* live cross→tick on the confirm field */
+  function checkMatch() {
+    var pw  = document.getElementById('upPw').value;
+    var pw2 = document.getElementById('upPw2').value;
+    var ok  = pw2.length > 0 && pw === pw2;
+    var bad = pw2.length > 0 && pw !== pw2;
+
+    var ic = document.getElementById('matchIc');
+    ic.classList.toggle('match-ic--ok', ok);
+    ic.classList.toggle('match-ic--bad', bad);
+
+    var inp = document.getElementById('upPw2');
+    inp.classList.toggle('is-ok', ok);
+    inp.classList.toggle('is-bad', bad);
+  }
+
+  /* ── Sign in (with seamless legacy migration inside AUTH.signIn) ── */
+  function handleSignIn(e) {
     e.preventDefault();
-    clearError('emailError');
+    clearError('inError');
 
-    var raw = document.getElementById('email').value.trim();
-    var v = AUTH.validateEmail(raw);
-    if (!v.ok) { showError('emailError', v.error); return; }
+    var v = AUTH.validateEmail(document.getElementById('inEmail').value);
+    if (!v.ok) { showError('inError', v.error); return; }
+    var pw = document.getElementById('inPw').value;
+    if (!pw) { showError('inError', 'Enter your password.'); return; }
 
-    var email = v.email;
-    var account = AUTH.getAccount(email);
+    var btn = document.getElementById('inBtn');
+    btn.disabled = true; btn.textContent = 'Signing in…';
 
-    if (account) {
-      // Existing user → password step
-      resolvedEmail = email;
-      var name = AUTH.displayName(email);
-      document.getElementById('pwTitle').textContent = 'Welcome back, ' + name.split(' ')[0] + '!';
-      document.getElementById('pwSub').textContent = email;
-      document.getElementById('stepEmail').style.display = 'none';
-      document.getElementById('stepPassword').style.display = 'block';
-      document.getElementById('password').focus();
-    } else {
-      // New user — check limit then send to OTP
-      var accounts = AUTH.getAccounts();
-      if (accounts.length >= AUTH.MAX_ACCOUNTS) {
-        showError('emailError',
-          'This device already has ' + AUTH.MAX_ACCOUNTS + ' accounts. Log into an existing one.');
-        return;
+    AUTH.signIn(v.email, pw, function (r) {
+      if (r.ok) {
+        window.location.href = 'index.html';
+      } else {
+        btn.disabled = false; btn.textContent = 'Sign in';
+        showError('inError', r.error);
       }
-      // Pass email via URL to OTP page
-      window.location.href = 'otp.html?email=' + encodeURIComponent(email);
-    }
+    });
   }
 
-  function handlePasswordStep(e) {
+  /* ── Sign up (phone mandatory) ── */
+  function handleSignUp(e) {
     e.preventDefault();
-    clearError('pwError');
+    clearError('upError');
 
-    var pw = document.getElementById('password').value;
-    var account = AUTH.getAccount(resolvedEmail);
+    var v = AUTH.validateEmail(document.getElementById('upEmail').value);
+    if (!v.ok) { showError('upError', v.error); return; }
 
-    if (!account || account.password !== pw) {
-      showError('pwError', 'Incorrect password. Try again.');
-      document.getElementById('password').value = '';
-      document.getElementById('password').focus();
-      return;
-    }
+    var cc  = document.getElementById('upCC').value.trim();
+    var num = document.getElementById('upNum').value.replace(/\s/g, '').trim();
+    if (!/^\+\d{1,3}$/.test(cc))  { showError('upError', 'Enter a valid country code (e.g. +91).'); return; }
+    if (!/^\d{10}$/.test(num))    { showError('upError', 'Phone number must be exactly 10 digits.'); return; }
 
-    AUTH.login(resolvedEmail);
-    window.location.href = 'index.html';
+    var pw  = document.getElementById('upPw').value;
+    var pw2 = document.getElementById('upPw2').value;
+    if (pw.length < 6) { showError('upError', 'Password must be at least 6 characters.'); return; }
+    if (pw !== pw2)    { showError('upError', 'Passwords do not match.'); return; }
+
+    var phone = cc + ' ' + num.slice(0, 5) + ' ' + num.slice(5);
+    var btn = document.getElementById('upBtn');
+    btn.disabled = true; btn.textContent = 'Creating account…';
+
+    AUTH.signUp(v.email, pw, phone, function (r) {
+      if (r.ok) {
+        window.location.href = 'index.html';
+      } else {
+        btn.disabled = false; btn.textContent = 'Create account';
+        showError('upError', r.error);
+      }
+    });
   }
 
-  function backToEmail() {
-    document.getElementById('stepPassword').style.display = 'none';
-    document.getElementById('stepEmail').style.display = 'block';
-    document.getElementById('email').focus();
-  }
+  UI.theme.apply();
 </script>
 
 </body>

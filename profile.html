@@ -2,471 +2,647 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14110d">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>CampusRide – Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<title>Campus Ride – Profile</title>
-<script src="auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-<script src="rides.js"></script>
 <script>
   (function () {
     try {
-      if (localStorage.getItem('cr-theme') === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
+      var t = localStorage.getItem('cr-theme');
+      var light = t === 'light' || (!t && matchMedia('(prefers-color-scheme: light)').matches);
+      if (light) document.documentElement.setAttribute('data-theme', 'light');
     } catch (_) {}
   })();
 </script>
-<script src="theme.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="firebase-init.js"></script>
+<script src="auth.js"></script>
+<script src="ui.js"></script>
+<script src="rides.js"></script>
 </head>
 <body>
 
-<!-- Top Nav -->
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-brand" aria-label="Campus Ride – Home">Campus Ride</a>
-    <div class="nav-links">
-      <a href="index.html" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-        <span>Home</span>
-      </a>
-      <a href="rides.html" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
-        <span>Rides</span>
-      </a>
-      <a href="profile.html" class="nav-link active" aria-current="page">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Profile</span>
-      </a>
-    </div>
-    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Toggle theme" aria-pressed="false" title="Toggle theme">
-      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-    </button>
-  </div>
-</nav>
+<main class="page">
 
-<main class="page-main">
-
-  <!-- Profile Hero -->
-  <div class="profile-hero">
-    <div class="profile-avatar" id="profileAvatar">??</div>
-    <div class="profile-info">
-      <div class="profile-name" id="profileName">
-        Loading…
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+  <!-- Hero -->
+  <header class="profile-hero reveal" style="--i:0">
+    <div class="avatar avatar--lg" id="heroAvatar">…</div>
+    <div class="profile-hero__info">
+      <div class="profile-hero__name">
+        <span id="heroName">Loading…</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Verified student"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
       </div>
-      <div class="profile-handle" id="profileEmail">—</div>
-      <div class="profile-rating">
-        <span class="rating-val">4.8</span>
-        <div class="stars">
-          <svg class="star-filled" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-          <svg class="star-filled" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-          <svg class="star-filled" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-          <svg class="star-filled" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-          <svg class="star-empty" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-        </div>
-        <span style="font-size:0.75rem; color:rgba(255,255,255,0.55);">(0 rides)</span>
-      </div>
+      <div class="profile-hero__mail" id="heroMail">—</div>
     </div>
-  </div>
+  </header>
 
   <!-- Stats -->
-  <div class="stat-row">
-    <div class="stat-box"><div class="stat-num">0</div><div class="stat-label">Rides Taken</div></div>
-    <div class="stat-box"><div class="stat-num">0</div><div class="stat-label">Rides Offered</div></div>
-    <div class="stat-box"><div class="stat-num">4.8</div><div class="stat-label">Rating</div></div>
-  </div>
+  <section class="section reveal" style="--i:1" aria-label="Your stats">
+    <div class="stats">
+      <div class="stat"><div class="stat__num" id="statTaken">0</div><div class="stat__label">Rides taken</div></div>
+      <div class="stat"><div class="stat__num" id="statOffered">0</div><div class="stat__label">Rides offered</div></div>
+      <div class="stat"><div class="stat__num" id="statRating">—</div><div class="stat__label">Driver rating</div></div>
+    </div>
+  </section>
 
-  <!-- Account Details -->
-  <div>
-    <div class="section-hd"><h2>Account Details</h2></div>
-    <div class="settings-card">
+  <!-- Account -->
+  <section class="section reveal" style="--i:2" aria-label="Account">
+    <div class="section-hd"><h2>Account</h2></div>
+    <div class="rows">
 
-      <!-- College Email (read-only) -->
-      <div class="settings-item" style="cursor:default;">
-        <div class="settings-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      <!-- Display name -->
+      <div class="row">
+        <div class="row__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
         </div>
-        <div class="settings-label">
-          <span>College Email</span>
-          <small id="accountEmail">—</small>
+        <div class="row__body">
+          <div class="row__title">Display name</div>
+          <div class="row__sub" id="nameDisplay">—</div>
         </div>
-        <div class="verify-item" style="gap:0.25rem;">
-          <svg class="verify-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
-          <small class="text-green fw-600">Verified</small>
+        <div class="row__end">
+          <button type="button" class="btn btn--ghost btn--sm" id="nameEditBtn" onclick="openNameEdit()">Edit</button>
+        </div>
+
+        <div class="row__panel hidden" id="namePanel">
+          <p class="hint" style="margin-bottom:0.75rem;">Pick any part of your real name — you can't use something unrelated.</p>
+          <div id="nameChips" style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.75rem;"></div>
+          <div class="field__wrap" style="margin-bottom:0.5rem;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+            <input id="nameInput" class="input" type="text" placeholder="e.g. Thribhuwan or Reddy" autocomplete="off" maxlength="40" oninput="onNameInput()">
+          </div>
+          <div class="msg-error" id="nameError" role="alert"></div>
+          <div style="display:flex; gap:0.5rem; margin-top:0.6rem;">
+            <button type="button" class="btn btn--primary btn--sm" onclick="saveName()">Save</button>
+            <button type="button" class="btn btn--ghost btn--sm" onclick="closeNameEdit()">Cancel</button>
+          </div>
         </div>
       </div>
 
-      <!-- Phone Number (editable) -->
-      <div class="settings-item" id="phoneRow" style="cursor:default; flex-wrap:wrap; align-items:flex-start; padding-bottom:0.5rem;">
-        <div class="settings-icon" style="margin-top:0.1rem;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <!-- Email -->
+      <div class="row">
+        <div class="row__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         </div>
-        <div class="settings-label" style="flex:1; min-width:0;">
-          <span>Phone Number</span>
-          <small id="phoneDisplay">Not set</small>
+        <div class="row__body">
+          <div class="row__title">College email</div>
+          <div class="row__sub" id="rowEmail">—</div>
         </div>
-        <button class="btn-ghost" onclick="openPhoneEdit()" style="padding:0.3rem 0.6rem; font-size:0.78rem; flex-shrink:0;" id="phoneEditBtn">Edit</button>
-
-        <!-- Inline edit panel -->
-        <div id="phoneEditPanel" style="display:none; width:100%; padding:0.5rem 0 0.25rem 3.25rem;">
-          <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
-            <div style="width:72px; flex-shrink:0;">
-              <input id="phoneCC" class="form-input no-icon" type="text" placeholder="+91" maxlength="5" aria-label="Country code" style="padding:0.6rem 0.5rem;">
-            </div>
-            <div style="flex:1;">
-              <input id="phoneNum" class="form-input no-icon" type="tel" placeholder="10-digit number" maxlength="10" aria-label="Phone number" style="padding:0.6rem 0.875rem;">
-            </div>
-          </div>
-          <div id="phoneError" style="font-size:0.78rem; color:var(--red); margin-bottom:0.4rem; display:none;"></div>
-          <div style="display:flex; gap:0.5rem;">
-            <button class="btn-sm" onclick="savePhone()">Save</button>
-            <button class="btn-ghost" onclick="cancelPhoneEdit()">Cancel</button>
-          </div>
-        </div>
-
-        <!-- Saved banner -->
-        <div id="phoneVerifyBanner" style="display:none; width:100%; padding:0.5rem 0.875rem 0.5rem 3.25rem; background:var(--brand-subtle); border-radius:var(--r-md); margin-top:0.5rem; font-size:0.82rem; color:var(--brand);">
-          Phone number updated to <strong id="bannerPhone"></strong>.
+        <div class="row__end">
+          <span class="verified">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+            Verified
+          </span>
         </div>
       </div>
 
-      <!-- Institution (read-only) -->
-      <div class="settings-item" style="cursor:default;">
-        <div class="settings-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <!-- Phone -->
+      <div class="row">
+        <div class="row__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         </div>
-        <div class="settings-label">
-          <span>Institution</span>
-          <small>BMS College of Engineering</small>
+        <div class="row__body">
+          <div class="row__title">Phone (WhatsApp)</div>
+          <div class="row__sub" id="phoneDisplay">Not set</div>
+        </div>
+        <div class="row__end">
+          <button type="button" class="btn btn--ghost btn--sm" id="phoneEditBtn" onclick="openPhoneEdit()">Edit</button>
+        </div>
+
+        <div class="row__panel hidden" id="phonePanel">
+          <p class="hint" style="margin-bottom:0.6rem;">Shown only to students who book your ride, so they can reach you on WhatsApp.</p>
+          <div style="display:flex; gap:0.5rem; margin-bottom:0.6rem;">
+            <input id="phoneCC" class="input input--plain" type="text" placeholder="+91" maxlength="5" aria-label="Country code" style="width:76px; flex-shrink:0;">
+            <input id="phoneNum" class="input input--plain" type="tel" inputmode="numeric" placeholder="10-digit number" maxlength="10" aria-label="Phone number">
+          </div>
+          <div class="msg-error" id="phoneError" role="alert"></div>
+          <div style="display:flex; gap:0.5rem; margin-top:0.6rem;">
+            <button type="button" class="btn btn--primary btn--sm" onclick="savePhone()">Save</button>
+            <button type="button" class="btn btn--ghost btn--sm" onclick="closePhoneEdit()">Cancel</button>
+          </div>
         </div>
       </div>
 
-      <!-- Password (editable) -->
-      <div class="settings-item" id="pwRow" style="cursor:default; flex-wrap:wrap; align-items:flex-start; padding-bottom:0.5rem;">
-        <div class="settings-icon" style="margin-top:0.1rem;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <!-- Password -->
+      <div class="row">
+        <div class="row__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
-        <div class="settings-label" style="flex:1; min-width:0;">
-          <span>Password</span>
-          <small>••••••••</small>
+        <div class="row__body">
+          <div class="row__title">Password</div>
+          <div class="row__sub">••••••••</div>
         </div>
-        <button class="btn-ghost" onclick="openPwEdit()" style="padding:0.3rem 0.6rem; font-size:0.78rem; flex-shrink:0;">Edit</button>
-
-        <!-- Inline edit panel -->
-        <div id="pwEditPanel" style="display:none; width:100%; padding:0.5rem 0 0.25rem 3.25rem;">
-          <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.5rem;">
-            <input id="pwCurrent" class="form-input no-icon" type="password" placeholder="Current password" autocomplete="current-password">
-            <input id="pwNew"     class="form-input no-icon" type="password" placeholder="New password (min. 6 chars)" autocomplete="new-password">
-            <input id="pwConfirm" class="form-input no-icon" type="password" placeholder="Confirm new password" autocomplete="new-password">
-          </div>
-          <div id="pwError" style="font-size:0.78rem; color:var(--red); margin-bottom:0.4rem; display:none;"></div>
-          <div style="display:flex; gap:0.5rem;">
-            <button class="btn-sm" onclick="savePassword()">Save</button>
-            <button class="btn-ghost" onclick="cancelPwEdit()">Cancel</button>
-          </div>
+        <div class="row__end">
+          <button type="button" class="btn btn--ghost btn--sm" onclick="openPwEdit()">Edit</button>
         </div>
 
-        <!-- Success banner -->
-        <div id="pwSuccessBanner" style="display:none; width:100%; padding:0.5rem 0.875rem 0.5rem 3.25rem; background:var(--green-bg); border-radius:var(--r-md); margin-top:0.5rem; font-size:0.82rem; color:var(--green-text);">
-          Password updated successfully.
+        <div class="row__panel hidden" id="pwPanel">
+          <div class="stack">
+            <input id="pwCurrent" class="input input--plain" type="password" placeholder="Current password" autocomplete="current-password">
+            <input id="pwNew" class="input input--plain" type="password" placeholder="New password (min. 6 chars)" autocomplete="new-password">
+            <input id="pwConfirm" class="input input--plain" type="password" placeholder="Confirm new password" autocomplete="new-password">
+          </div>
+          <div class="msg-error" id="pwError" role="alert"></div>
+          <div style="display:flex; gap:0.5rem; margin-top:0.6rem;">
+            <button type="button" class="btn btn--primary btn--sm" onclick="savePassword()">Save</button>
+            <button type="button" class="btn btn--ghost btn--sm" onclick="closePwEdit()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Institution -->
+      <div class="row">
+        <div class="row__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="row__body">
+          <div class="row__title">Institution</div>
+          <div class="row__sub">BMS College of Engineering</div>
+        </div>
+      </div>
+
+      <!-- Appearance -->
+      <div class="row">
+        <div class="row__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+        <div class="row__body">
+          <div class="row__title">Appearance</div>
+          <div class="row__sub">Auto follows your device setting</div>
+        </div>
+        <div class="row__end">
+          <div class="seg" data-theme-seg role="group" aria-label="Theme">
+            <button type="button" class="seg__opt" data-mode="auto">Auto</button>
+            <button type="button" class="seg__opt" data-mode="light">Light</button>
+            <button type="button" class="seg__opt" data-mode="dark">Dark</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Install app -->
+      <div class="row install-row" id="installRow">
+        <div class="row__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        </div>
+        <div class="row__body">
+          <div class="row__title">Install CampusRide</div>
+          <div class="row__sub">Add to your home screen like an app</div>
+        </div>
+        <div class="row__end">
+          <button type="button" class="btn btn--primary btn--sm" onclick="UI.promptInstall()">Install</button>
         </div>
       </div>
 
     </div>
-  </div>
+  </section>
 
-  <!-- Ride History -->
-  <div>
-    <div class="section-hd"><h2>Ride History</h2></div>
-    <div class="tabs" style="margin-bottom:1rem;">
-      <button class="tab active" id="tab-booked"  onclick="switchTab('booked')">Booked (<span id="cnt-booked">0</span>)</button>
-      <button class="tab"        id="tab-offered" onclick="switchTab('offered')">Offered (<span id="cnt-offered">0</span>)</button>
+  <!-- History -->
+  <section class="section reveal" style="--i:3" aria-label="Ride history">
+    <div class="section-hd"><h2>Ride history</h2></div>
+    <div class="tabs" role="tablist" style="margin-bottom:0.9rem;">
+      <button class="tab active" id="tabBooked" role="tab" aria-selected="true" onclick="switchTab('booked')">Booked (<span id="cntBooked">0</span>)</button>
+      <button class="tab" id="tabOffered" role="tab" aria-selected="false" onclick="switchTab('offered')">Offered (<span id="cntOffered">0</span>)</button>
     </div>
-    <div id="panel-booked"  class="rides-list"></div>
-    <div id="panel-offered" class="rides-list" hidden></div>
-  </div>
+    <div class="list" id="panelBooked" role="tabpanel"></div>
+    <div class="list hidden" id="panelOffered" role="tabpanel"></div>
+  </section>
 
-  <!-- Log Out -->
-  <div style="padding-bottom:0.5rem;">
-    <button class="btn-secondary" onclick="handleLogout()" style="display:flex; align-items:center; justify-content:center; gap:0.5rem;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-      Log Out
+  <!-- Sign out -->
+  <section class="section reveal" style="--i:4">
+    <button type="button" class="btn btn--soft btn--block" onclick="handleLogout()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+      Sign out
     </button>
-  </div>
+  </section>
 
 </main>
 
 <script>
-  if (!AUTH.requireAuth()) { /* redirected */ }
+  UI.mountNav('profile');
 
-  var email   = AUTH.currentUser();
-  var account = AUTH.getAccount(email);
-  var name    = AUTH.displayName(email);
+  var me = null, name = '', myPhone = null;
 
-  // Hero
-  document.getElementById('profileAvatar').textContent =
-    name.split(' ').map(function(w){ return w[0]; }).join('').slice(0,2).toUpperCase();
-  document.getElementById('profileName').firstChild.textContent = name + ' ';
-  document.getElementById('profileEmail').textContent  = email;
-  document.getElementById('accountEmail').textContent  = email;
+  AUTH.requireAuth(function (user) {
+    me = user.email;
+    name = AUTH.displayName(me);   // fallback from email
 
-  // Phone — load saved value
-  if (account && account.phone) {
-    document.getElementById('phoneDisplay').textContent = account.phone;
-  }
+    /* ── Hero ── */
+    var heroAvatar = document.getElementById('heroAvatar');
+    document.getElementById('heroMail').textContent = me;
+    document.getElementById('rowEmail').textContent = me;
 
-  function handleLogout() {
-    AUTH.logout();
-    window.location.href = 'login.html';
-  }
-
-  /* ── Ride History ── */
-  function switchTab(tab) {
-    document.getElementById('panel-booked').hidden  = tab !== 'booked';
-    document.getElementById('panel-offered').hidden = tab !== 'offered';
-    document.getElementById('tab-booked').className  = 'tab ' + (tab === 'booked'  ? 'active' : '');
-    document.getElementById('tab-offered').className = 'tab ' + (tab === 'offered' ? 'active' : '');
-  }
-
-  function renderHistory() {
-    RIDES.getBookedBy(email, function (booked) {
-      document.getElementById('cnt-booked').textContent = booked.length;
-      var bPanel = document.getElementById('panel-booked');
-      bPanel.innerHTML = '';
-      if (booked.length === 0) {
-        bPanel.innerHTML = '<p style="text-align:center; color:var(--text-3); padding:2rem 0; font-size:0.88rem;">No booked rides yet.</p>';
-      } else {
-        booked.forEach(function (ride) { bPanel.appendChild(buildHistCard(ride, 'booked')); });
-      }
-    });
-
-    RIDES.getOfferedBy(email, function (offered) {
-      document.getElementById('cnt-offered').textContent = offered.length;
-      var oPanel = document.getElementById('panel-offered');
-      oPanel.innerHTML = '';
-      if (offered.length === 0) {
-        oPanel.innerHTML = '<p style="text-align:center; color:var(--text-3); padding:2rem 0; font-size:0.88rem;">No offered rides yet.</p>';
-      } else {
-        offered.forEach(function (ride) { oPanel.appendChild(buildHistCard(ride, 'offered')); });
-      }
-    });
-  }
-
-  function buildHistCard(ride, role) {
-    var div = document.createElement('div');
-    div.className = 'hist-card';
-
-    var seatsBooked = ride.bookedBy.length;
-    var seatsTotal  = parseInt(ride.seats);
-    var statusLabel = ride.status === 'full' ? 'Full' : ride.status === 'cancelled' ? 'Cancelled' : 'Open';
-    var statusClass = ride.status === 'full' ? 'completed' : ride.status === 'cancelled' ? 'cancelled' : 'pending';
-
-    var topLine, badge;
-    if (role === 'booked') {
-      var driverName = AUTH.displayName(ride.offeredBy);
-      topLine = 'With ' + RIDES.esc(driverName);
-      badge   = '<span class="status-badge completed">Booked</span>';
-    } else {
-      topLine = seatsBooked + '/' + seatsTotal + ' seat' + (seatsTotal !== 1 ? 's' : '') + ' booked';
-      badge   = '<span class="status-badge ' + statusClass + '">' + statusLabel + '</span>';
+    function applyName(n) {
+      name = n || AUTH.displayName(me);
+      heroAvatar.textContent = UI.initials(name);
+      heroAvatar.setAttribute('style', UI.avatarStyle(me));
+      document.getElementById('heroName').textContent = name;
+      document.getElementById('nameDisplay').textContent = name;
     }
 
-    var cancelBtn = '';
-    if (ride.status !== 'cancelled') {
-      if (new Date(ride.datetime) - Date.now() > 15 * 60 * 1000) {
-        if (role === 'booked') {
-          cancelBtn = '<button class="btn-cancel" onclick="cancelMyBooking(\'' + ride.id + '\',this)">Cancel</button>';
-        } else {
-          cancelBtn = '<button class="btn-cancel" onclick="cancelMyOfferedRide(\'' + ride.id + '\',this)">Cancel</button>';
+    // Load stored display name (or fall back to email-parsed)
+    AUTH.getStoredName(function (stored) {
+      applyName(stored);
+    });
+
+    /* ── Mandatory phone ── */
+    AUTH.getMyPhone(function (p) {
+      if (p) {
+        myPhone = p;
+        document.getElementById('phoneDisplay').textContent = p;
+        return;
+      }
+      UI.requirePhone(function (phone, done) {
+        AUTH.setMyPhone(phone, function (r) {
+          if (r.ok) {
+            myPhone = phone;
+            document.getElementById('phoneDisplay').textContent = phone;
+          }
+          done(r.ok);
+        });
+      });
+    });
+
+    loadAll();
+  });
+
+  /* ── Install row ── */
+  UI.onInstallable(function () {
+    document.getElementById('installRow').classList.add('show');
+  });
+
+  /* ── Stats + history ── */
+  var myRatingsGiven = {};   // driverEmail → stars
+  var driverNames    = {};   // driverEmail → chosen display name
+
+  function loadAll() {
+    RIDES.getBookedBy(me, function (booked) {
+      var taken = booked.filter(function (r) { return r.status !== 'cancelled' && RIDES.isPast(r.datetime); }).length;
+      UI.countUp(document.getElementById('statTaken'), taken);
+      document.getElementById('cntBooked').textContent = booked.length;
+      renderBooked(booked);
+
+      /* fetch my given ratings for past drivers, then re-render */
+      var drivers = [];
+      booked.forEach(function (r) {
+        if (RIDES.isPast(r.datetime) && r.status !== 'cancelled' && drivers.indexOf(r.offeredBy) === -1) {
+          drivers.push(r.offeredBy);
         }
+      });
+      var left = drivers.length;
+      if (!left) return;
+      drivers.forEach(function (d) {
+        RIDES.getMyRating(d, me, function (stars) {
+          myRatingsGiven[d] = stars;
+          if (--left === 0) renderBooked(booked);
+        });
+      });
+    });
+
+    RIDES.getOfferedBy(me, function (offered) {
+      var count = offered.filter(function (r) { return r.status !== 'cancelled'; }).length;
+      UI.countUp(document.getElementById('statOffered'), count);
+      document.getElementById('cntOffered').textContent = offered.length;
+      renderOffered(offered);
+    });
+
+    RIDES.getAllRatings(function (map) {
+      var mine = map[me];
+      var el = document.getElementById('statRating');
+      if (mine) {
+        el.innerHTML = '<span id="ratingNum">0.0</span> ' + UI.starSvg('star');
+        UI.countUp(document.getElementById('ratingNum'), mine.avg, 1);
       } else {
-        cancelBtn = '<span style="font-size:0.75rem;color:var(--text-3);" title="Within 15 min of ride">Locked</span>';
+        el.textContent = '—';
       }
+    });
+  }
+
+  /* ── Tabs ── */
+  function switchTab(tab) {
+    document.getElementById('panelBooked').classList.toggle('hidden', tab !== 'booked');
+    document.getElementById('panelOffered').classList.toggle('hidden', tab !== 'offered');
+    document.getElementById('tabBooked').className = 'tab' + (tab === 'booked' ? ' active' : '');
+    document.getElementById('tabOffered').className = 'tab' + (tab === 'offered' ? ' active' : '');
+    document.getElementById('tabBooked').setAttribute('aria-selected', String(tab === 'booked'));
+    document.getElementById('tabOffered').setAttribute('aria-selected', String(tab === 'offered'));
+  }
+
+  /* ── History cards ── */
+  function histRoute(r) {
+    return '<div class="hist__route">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="10" r="3"/><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/></svg>' +
+      '<span>' + UI.esc(r.from) + ' → ' + UI.esc(r.to) + '</span></div>';
+  }
+
+  function ratingControl(r) {
+    var stars = myRatingsGiven[r.offeredBy];
+    if (stars) {
+      return '<div class="rate-line">You rated ' + UI.starsHTML(stars) + '</div>';
     }
-
-    div.innerHTML =
-      '<div class="hist-top">' +
-        '<div class="hist-driver">' + topLine + '</div>' +
-        '<div class="hist-date">'   + RIDES.formatDT(ride.datetime) + '</div>' +
-      '</div>' +
-      '<div class="hist-route">' +
-        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/></svg>' +
-        RIDES.esc(ride.from) + ' → ' + RIDES.esc(ride.to) +
-      '</div>' +
-      '<div class="hist-footer">' +
-        '<span class="hist-price">₹' + RIDES.esc(String(ride.price || '—')) + '</span>' +
-        badge +
-        cancelBtn +
-      '</div>';
-
-    return div;
+    var gid = 'rate-' + r.id;
+    var html = '<div class="rate-line">Rate driver: <span class="stars-input" role="radiogroup" aria-label="Rate ' + UI.esc(AUTH.rideName(r)) + '">';
+    for (var s = 5; s >= 1; s--) {
+      html += '<input type="radio" id="' + gid + '-' + s + '" name="' + gid + '" value="' + s + '" ' +
+              'onchange="submitRating(\'' + UI.esc(r.offeredBy) + '\',\'' + UI.esc(r.id) + '\',' + s + ')">' +
+              '<label for="' + gid + '-' + s + '" title="' + s + ' star' + (s > 1 ? 's' : '') + '">' + UI.starSvg() + '</label>';
+    }
+    return html + '</span></div>';
   }
 
-  function cancelMyBooking(rideId, btn) {
-    if (!confirm('Cancel your booking for this ride?')) return;
-    btn.textContent = '…'; btn.disabled = true;
-    RIDES.cancelBooking(rideId, email, function (r) {
-      if (r.ok) {
-        btn.closest('.hist-card').querySelector('.status-badge').textContent = 'Cancelled';
-        btn.replaceWith(Object.assign(document.createElement('span'), { textContent: 'Cancelled', style: 'font-size:0.75rem;color:var(--text-3);' }));
-        renderHistory();
-      } else if (r.error === 'too_late') {
-        alert('Can\'t cancel within 15 minutes of the ride.');
-        btn.textContent = 'Cancel'; btn.disabled = false;
-      } else { btn.textContent = 'Cancel'; btn.disabled = false; }
+  function renderBooked(booked) {
+    var panel = document.getElementById('panelBooked');
+    if (!booked.length) {
+      panel.innerHTML = '<div class="empty">' + UI.icon('route', 44) +
+        '<h3>No booked rides yet</h3><p>Rides you book will show up here.</p>' +
+        '<a href="rides.html" class="btn btn--soft btn--sm">Find a ride</a></div>';
+      return;
+    }
+    panel.innerHTML = booked.map(function (r) {
+      driverNames[r.offeredBy] = AUTH.rideName(r);
+      var past = RIDES.isPast(r.datetime);
+      var badge =
+        r.status === 'cancelled' ? '<span class="badge badge--cancelled">Cancelled</span>' :
+        past                     ? '<span class="badge badge--locked">Completed</span>' :
+                                   '<span class="badge badge--booked">Upcoming</span>';
+      var action = '';
+      if (r.status !== 'cancelled' && !past) {
+        action = RIDES.canCancel(r.datetime)
+          ? '<button type="button" class="btn btn--danger btn--sm" onclick="cancelBookingHist(\'' + UI.esc(r.id) + '\')">Cancel</button>'
+          : '<span class="badge badge--locked">Locked</span>';
+      }
+      var rate = (past && r.status !== 'cancelled') ? ratingControl(r) : '';
+      return (
+        '<div class="hist">' +
+          '<div class="hist__top">' +
+            '<span class="hist__who">With ' + UI.esc(AUTH.rideName(r)) + '</span>' +
+            '<span class="hist__date">' + RIDES.formatDT(r.datetime) + '</span>' +
+          '</div>' +
+          histRoute(r) +
+          '<div class="hist__foot">' +
+            '<span class="hist__price">₹' + UI.esc(String(r.price || '—')) + '</span>' +
+            badge +
+            '<span class="spacer"></span>' +
+            action +
+          '</div>' +
+          rate +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  function renderOffered(offered) {
+    var panel = document.getElementById('panelOffered');
+    if (!offered.length) {
+      panel.innerHTML = '<div class="empty">' + UI.icon('plus', 44) +
+        '<h3>No offered rides yet</h3><p>Post a ride and split your fare.</p>' +
+        '<a href="rides.html" class="btn btn--soft btn--sm">Offer a ride</a></div>';
+      return;
+    }
+    panel.innerHTML = offered.map(function (r) {
+      var past = RIDES.isPast(r.datetime);
+      var badge =
+        r.status === 'cancelled' ? '<span class="badge badge--cancelled">Cancelled</span>' :
+        past                     ? '<span class="badge badge--locked">Completed</span>' :
+        r.status === 'full'      ? '<span class="badge badge--full">Full</span>' :
+                                   '<span class="badge badge--open">Open</span>';
+      var action = '';
+      if (r.status !== 'cancelled' && !past) {
+        action = RIDES.canCancel(r.datetime)
+          ? '<button type="button" class="btn btn--danger btn--sm" onclick="cancelRideHist(\'' + UI.esc(r.id) + '\')">Cancel</button>'
+          : '<span class="badge badge--locked">Locked</span>';
+      }
+      return (
+        '<div class="hist">' +
+          '<div class="hist__top">' +
+            '<span class="hist__who">' + r.bookedBy.length + '/' + UI.esc(String(r.seats)) + ' seats booked</span>' +
+            '<span class="hist__date">' + RIDES.formatDT(r.datetime) + '</span>' +
+          '</div>' +
+          histRoute(r) +
+          '<div class="hist__foot">' +
+            '<span class="hist__price">₹' + UI.esc(String(r.price || '—')) + '/seat</span>' +
+            badge +
+            '<span class="spacer"></span>' +
+            action +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  /* ── Rating submit ── */
+  function submitRating(driver, rideId, stars) {
+    RIDES.rateDriver(driver, me, rideId, stars, function (res) {
+      if (res.ok) {
+        myRatingsGiven[driver] = stars;
+        var dn = (driverNames[driver] || AUTH.displayName(driver)).split(' ')[0];
+        UI.toast('Rated ' + dn + ' ' + stars + '★ — thanks!', 'success');
+        loadAll();
+      } else {
+        UI.toast('Could not save rating — try again', 'error');
+      }
     });
   }
 
-  function cancelMyOfferedRide(rideId, btn) {
-    if (!confirm('Cancel this ride? Bookers will lose their seats.')) return;
-    btn.textContent = '…'; btn.disabled = true;
-    RIDES.cancelRide(rideId, email, function (r) {
-      if (r.ok) {
-        btn.closest('.hist-card').querySelector('.status-badge').textContent = 'Cancelled';
-        btn.replaceWith(Object.assign(document.createElement('span'), { textContent: 'Cancelled', style: 'font-size:0.75rem;color:var(--text-3);' }));
-        renderHistory();
-      } else if (r.error === 'too_late') {
-        alert('Can\'t cancel within 15 minutes of the ride.');
-        btn.textContent = 'Cancel'; btn.disabled = false;
-      } else { btn.textContent = 'Cancel'; btn.disabled = false; }
+  /* ── Cancel actions ── */
+  function cancelBookingHist(id) {
+    UI.confirm({
+      title: 'Cancel this booking?',
+      message: 'Your seat will be released for other students.',
+      confirmLabel: 'Cancel booking', cancelLabel: 'Keep it', danger: true
+    }).then(function (yes) {
+      if (!yes) return;
+      RIDES.cancelBooking(id, me, function (res) {
+        UI.toast(res.ok ? 'Booking cancelled' : (res.error === 'too_late' ? 'Can’t cancel within 15 minutes' : 'Something went wrong'), res.ok ? 'success' : 'error');
+        if (res.ok) loadAll();
+      });
     });
   }
 
-  renderHistory();
+  function cancelRideHist(id) {
+    UI.confirm({
+      title: 'Cancel this ride?',
+      message: 'Students who booked seats will lose them.',
+      confirmLabel: 'Cancel ride', cancelLabel: 'Keep it', danger: true
+    }).then(function (yes) {
+      if (!yes) return;
+      RIDES.cancelRide(id, me, function (res) {
+        UI.toast(res.ok ? 'Ride cancelled' : (res.error === 'too_late' ? 'Can’t cancel within 15 minutes' : 'Something went wrong'), res.ok ? 'success' : 'error');
+        if (res.ok) loadAll();
+      });
+    });
+  }
 
-  /* ── Phone editing ── */
-  var CC_RE  = /^\+\d{1,3}$/;
-  var NUM_RE = /^\d{10}$/;
+  /* ── Display name edit ── */
+  function openNameEdit() {
+    // Build suggestion chips from the email name tokens
+    var local = me.split('@')[0];
+    var tokens = local.split(/[._\-]/).filter(function (t) { return !/^\d+$/.test(t); });
+    // Offer the full token(s) as chips — user can type substrings themselves
+    var chips = document.getElementById('nameChips');
+    chips.innerHTML = '';
+    tokens.forEach(function (t) {
+      var cap = AUTH.titleCase(t);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip';
+      btn.textContent = cap;
+      btn.setAttribute('aria-label', 'Use ' + cap);
+      btn.onclick = function () {
+        document.getElementById('nameInput').value = cap;
+        onNameInput();
+        document.getElementById('nameInput').focus();
+      };
+      chips.appendChild(btn);
+    });
+
+    document.getElementById('nameInput').value = name !== AUTH.displayName(me) ? name : '';
+    document.getElementById('nameError').style.display = 'none';
+    document.getElementById('namePanel').classList.remove('hidden');
+    document.getElementById('nameInput').focus();
+  }
+
+  function closeNameEdit() {
+    document.getElementById('namePanel').classList.add('hidden');
+  }
+
+  function onNameInput() {
+    var val = document.getElementById('nameInput').value;
+    var errEl = document.getElementById('nameError');
+    if (!val.trim()) { errEl.style.display = 'none'; return; }
+    var v = AUTH.validateDisplayName(val, me);
+    if (!v.ok) {
+      errEl.textContent = v.error;
+      errEl.style.display = 'block';
+    } else {
+      errEl.style.display = 'none';
+    }
+  }
+
+  function saveName() {
+    var errEl = document.getElementById('nameError');
+    var raw = document.getElementById('nameInput').value.trim();
+    var v = AUTH.validateDisplayName(raw, me);
+    if (!v.ok) {
+      errEl.textContent = v.error;
+      errEl.style.display = 'block';
+      return;
+    }
+    var formatted = AUTH.titleCase(raw);
+    AUTH.setStoredName(formatted, function (r) {
+      if (!r.ok) {
+        errEl.textContent = 'Could not save — check your connection.';
+        errEl.style.display = 'block';
+        return;
+      }
+      name = formatted;
+      document.getElementById('heroName').textContent = formatted;
+      document.getElementById('nameDisplay').textContent = formatted;
+      var heroAvatar = document.getElementById('heroAvatar');
+      heroAvatar.textContent = UI.initials(formatted);
+      closeNameEdit();
+      UI.toast('Name updated to ' + formatted, 'success');
+      // Propagate to all my existing rides so everyone sees the new name
+      RIDES.renameMine(me, formatted, function () { loadAll(); });
+    });
+  }
+
+  /* ── Phone edit ── */
+  var CC_RE = /^\+\d{1,3}$/, NUM_RE = /^\d{10}$/;
 
   function openPhoneEdit() {
     var current = document.getElementById('phoneDisplay').textContent.trim();
     if (current !== 'Not set') {
       var parts = current.split(' ');
-      document.getElementById('phoneCC').value  = parts[0] || '+91';
+      document.getElementById('phoneCC').value = parts[0] || '+91';
       document.getElementById('phoneNum').value = parts.slice(1).join('').replace(/\s/g, '');
     } else {
-      document.getElementById('phoneCC').value  = '+91';
+      document.getElementById('phoneCC').value = '+91';
       document.getElementById('phoneNum').value = '';
     }
-    clearPhoneError();
-    document.getElementById('phoneVerifyBanner').style.display = 'none';
-    document.getElementById('phoneEditPanel').style.display = 'block';
+    document.getElementById('phoneError').style.display = 'none';
+    document.getElementById('phonePanel').classList.remove('hidden');
     document.getElementById('phoneNum').focus();
   }
-
-  function cancelPhoneEdit() {
-    document.getElementById('phoneEditPanel').style.display = 'none';
-    clearPhoneError();
+  function closePhoneEdit() {
+    document.getElementById('phonePanel').classList.add('hidden');
   }
-
-  function clearPhoneError() {
-    var el = document.getElementById('phoneError');
-    el.textContent = ''; el.style.display = 'none';
-  }
-
   function savePhone() {
-    clearPhoneError();
+    var errEl = document.getElementById('phoneError');
+    errEl.style.display = 'none';
     var cc  = document.getElementById('phoneCC').value.trim();
     var num = document.getElementById('phoneNum').value.replace(/\s/g, '').trim();
-    var ok  = true;
 
     if (!CC_RE.test(cc)) {
-      document.getElementById('phoneError').textContent = 'Enter a valid country code (e.g. +91).';
-      document.getElementById('phoneError').style.display = 'block';
-      ok = false;
-    } else if (!NUM_RE.test(num)) {
-      document.getElementById('phoneError').textContent = 'Phone number must be exactly 10 digits.';
-      document.getElementById('phoneError').style.display = 'block';
-      ok = false;
+      errEl.textContent = 'Enter a valid country code (e.g. +91).';
+      errEl.style.display = 'block'; return;
     }
-    if (!ok) return;
-
-    var formatted = cc + ' ' + num.slice(0,5) + ' ' + num.slice(5);
-    AUTH.updateAccount(email, { phone: formatted });
-    document.getElementById('phoneDisplay').textContent = formatted;
-    document.getElementById('bannerPhone').textContent  = formatted;
-    document.getElementById('phoneVerifyBanner').style.display = 'block';
-    document.getElementById('phoneEditPanel').style.display    = 'none';
+    if (!NUM_RE.test(num)) {
+      errEl.textContent = 'Phone number must be exactly 10 digits.';
+      errEl.style.display = 'block'; return;
+    }
+    var formatted = cc + ' ' + num.slice(0, 5) + ' ' + num.slice(5);
+    AUTH.setMyPhone(formatted, function (r) {
+      if (!r.ok) {
+        errEl.textContent = 'Could not save — check your connection.';
+        errEl.style.display = 'block';
+        return;
+      }
+      myPhone = formatted;
+      document.getElementById('phoneDisplay').textContent = formatted;
+      closePhoneEdit();
+      UI.toast('Phone saved — bookers can now WhatsApp you', 'success');
+    });
   }
 
-  /* ── Password editing ── */
+  /* ── Password edit ── */
   function openPwEdit() {
-    document.getElementById('pwCurrent').value = '';
-    document.getElementById('pwNew').value     = '';
-    document.getElementById('pwConfirm').value = '';
-    clearPwError();
-    document.getElementById('pwSuccessBanner').style.display = 'none';
-    document.getElementById('pwEditPanel').style.display = 'block';
+    ['pwCurrent', 'pwNew', 'pwConfirm'].forEach(function (id) { document.getElementById(id).value = ''; });
+    document.getElementById('pwError').style.display = 'none';
+    document.getElementById('pwPanel').classList.remove('hidden');
     document.getElementById('pwCurrent').focus();
   }
-
-  function cancelPwEdit() {
-    document.getElementById('pwEditPanel').style.display = 'none';
-    clearPwError();
+  function closePwEdit() {
+    document.getElementById('pwPanel').classList.add('hidden');
   }
-
-  function clearPwError() {
-    var el = document.getElementById('pwError');
-    el.textContent = ''; el.style.display = 'none';
-  }
-
   function savePassword() {
-    clearPwError();
-    var current  = document.getElementById('pwCurrent').value;
-    var newPw    = document.getElementById('pwNew').value;
-    var confirm  = document.getElementById('pwConfirm').value;
-    var acc      = AUTH.getAccount(email);
-    var errEl    = document.getElementById('pwError');
+    var errEl = document.getElementById('pwError');
+    errEl.style.display = 'none';
+    var current = document.getElementById('pwCurrent').value;
+    var newPw   = document.getElementById('pwNew').value;
+    var confirm = document.getElementById('pwConfirm').value;
 
-    if (acc.password !== current) {
-      errEl.textContent = 'Current password is incorrect.';
-      errEl.style.display = 'block';
-      document.getElementById('pwCurrent').value = '';
-      document.getElementById('pwCurrent').focus();
-      return;
-    }
-    if (newPw.length < 6) {
-      errEl.textContent = 'New password must be at least 6 characters.';
-      errEl.style.display = 'block';
-      return;
-    }
-    if (newPw !== confirm) {
-      errEl.textContent = 'Passwords do not match.';
-      errEl.style.display = 'block';
-      return;
-    }
+    function fail(msg) { errEl.textContent = msg; errEl.style.display = 'block'; }
+    if (!current)          return fail('Enter your current password.');
+    if (newPw.length < 6)  return fail('New password must be at least 6 characters.');
+    if (newPw !== confirm) return fail('Passwords do not match.');
 
-    AUTH.updateAccount(email, { password: newPw });
-    document.getElementById('pwSuccessBanner').style.display = 'block';
-    document.getElementById('pwEditPanel').style.display     = 'none';
+    AUTH.changePassword(current, newPw, function (r) {
+      if (!r.ok) {
+        fail(r.error);
+        if (r.error.indexOf('incorrect') > -1) {
+          document.getElementById('pwCurrent').value = '';
+          document.getElementById('pwCurrent').focus();
+        }
+        return;
+      }
+      closePwEdit();
+      UI.toast('Password updated', 'success');
+    });
+  }
+
+  /* ── Logout ── */
+  function handleLogout() {
+    AUTH.signOut(function () { window.location.href = 'login.html'; });
   }
 </script>
-
-<!-- Bottom Nav (mobile) -->
-<nav class="bottom-nav" aria-label="Main navigation">
-  <div class="bottom-nav-inner">
-    <a href="index.html" class="bottom-nav-link" aria-label="Home">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-      <span>Home</span>
-    </a>
-    <a href="rides.html" class="bottom-nav-link" aria-label="Rides">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
-      <span>Rides</span>
-    </a>
-    <a href="profile.html" class="bottom-nav-link active" aria-label="Profile" aria-current="page">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Profile</span>
-    </a>
-    <button type="button" class="bottom-nav-link theme-toggle" data-theme-toggle aria-label="Toggle theme" aria-pressed="false">
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-      <span>Theme</span>
-    </button>
-  </div>
-</nav>
 
 </body>
 </html>

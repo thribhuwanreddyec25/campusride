@@ -2,292 +2,409 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14110d">
+<meta name="description" content="CampusRide — share rides with verified BMSCE students.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>CampusRide – Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<title>Campus Ride – Home</title>
-<script src="auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-<script src="rides.js"></script>
 <script>
   (function () {
     try {
-      if (localStorage.getItem('cr-theme') === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
+      var t = localStorage.getItem('cr-theme');
+      var light = t === 'light' || (!t && matchMedia('(prefers-color-scheme: light)').matches);
+      if (light) document.documentElement.setAttribute('data-theme', 'light');
     } catch (_) {}
   })();
 </script>
-<script src="theme.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="firebase-init.js"></script>
+<script src="auth.js"></script>
+<script src="ui.js"></script>
+<script src="rides.js"></script>
+<script src="places.js" defer></script>
 </head>
 <body>
 
-<!-- Top Nav -->
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-brand" aria-label="Campus Ride – Home">Campus Ride</a>
-    <div class="nav-links">
-      <a href="index.html" class="nav-link active" aria-current="page">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-        <span>Home</span>
-      </a>
-      <a href="rides.html" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
-        <span>Rides</span>
-      </a>
-      <a href="profile.html" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Profile</span>
-      </a>
-    </div>
-    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Toggle theme" aria-pressed="false" title="Toggle theme">
-      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-    </button>
-  </div>
-</nav>
-
-<main class="page-main">
+<main class="page">
 
   <!-- Hero -->
-  <div class="home-hero">
-    <p class="hero-label" id="heroGreeting">Good afternoon</p>
-    <h1 class="hero-title" id="heroTitle">Welcome back 👋</h1>
-    <p class="hero-sub">Where are you heading today?</p>
-  </div>
+  <header class="hero hero--panel reveal" style="--i:0">
+    <p class="hero__eyebrow" id="heroGreeting">Good day</p>
+    <h1 id="heroTitle">Where to?</h1>
+    <p>Find a seat or fill your own — in seconds.</p>
+  </header>
 
-  <!-- Quick Actions -->
-  <div>
-    <div class="section-hd">
-      <h2>Quick Actions</h2>
-    </div>
-    <div class="action-grid">
-      <a href="rides.html" class="action-card">
-        <div class="action-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+  <!-- Quick actions -->
+  <section class="section reveal" style="--i:1" aria-label="Quick actions">
+    <div class="tiles">
+      <a href="rides.html" class="tile">
+        <div class="tile__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </div>
-        <h3>Find a Ride</h3>
-        <p>Browse available rides near you</p>
+        <h3>Find a ride</h3>
+        <p>Browse live rides from students near you</p>
       </a>
-      <button class="action-card primary" onclick="document.getElementById('offerOverlay').classList.add('open')">
-        <div class="action-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      <button type="button" class="tile tile--primary" onclick="openOffer()">
+        <div class="tile__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
         </div>
-        <h3>Offer a Ride</h3>
-        <p>Share your journey with others</p>
+        <h3>Offer a ride</h3>
+        <p>Going somewhere? Fill your empty seats</p>
       </button>
     </div>
-  </div>
+  </section>
 
-  <!-- Upcoming Bookings (dynamic) -->
-  <div id="bookings-section">
+  <!-- Upcoming bookings -->
+  <section class="section reveal" style="--i:2" aria-label="Upcoming bookings">
     <div class="section-hd">
-      <h2>Upcoming Bookings</h2>
-      <span class="section-tag" id="bookings-tag">0 upcoming</span>
+      <h2>Upcoming rides</h2>
+      <span class="section-tag" id="bookingsTag">…</span>
     </div>
-    <div class="rides-list" id="bookings-list">
-      <p id="no-bookings" style="text-align:center; color:var(--text-3); font-size:0.88rem; padding:1.5rem 0;">
-        No bookings yet — <a href="rides.html" style="color:var(--brand);">find a ride</a>.
-      </p>
-    </div>
-  </div>
+    <div class="list" id="bookingsList"></div>
+  </section>
 
 </main>
 
-<!-- Offer Ride Sheet -->
-<div class="offer-overlay" id="offerOverlay" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="offer-sheet">
-    <div class="sheet-handle"></div>
-    <h2 class="sheet-title">Offer a Ride</h2>
-    <form class="offer-form" onsubmit="postRideHome(event)">
-      <div class="input-group">
-        <label class="input-label">From</label>
-        <div class="input-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-          <input id="hOfferFrom" type="text" class="form-input" placeholder="Pickup location" required>
+<!-- Offer ride sheet -->
+<div class="overlay" id="offerOverlay" role="dialog" aria-modal="true" aria-labelledby="offerTitle" aria-hidden="true">
+  <div class="sheet">
+    <div class="sheet__handle"></div>
+    <h2 class="sheet__title" id="offerTitle">Offer a ride</h2>
+    <form class="sheet__form" onsubmit="postRide(event)" novalidate>
+      <div class="field">
+        <label class="field__label" for="offFrom">From</label>
+        <div class="field__wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+          <input id="offFrom" type="text" class="input" placeholder="Pickup — e.g. BMSCE Gate 2" required data-autofocus>
         </div>
       </div>
-      <div class="input-group">
-        <label class="input-label">To</label>
-        <div class="input-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-          <input id="hOfferTo" type="text" class="form-input" placeholder="Drop location" required>
+      <div class="field">
+        <label class="field__label" for="offTo">To</label>
+        <div class="field__wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+          <input id="offTo" type="text" class="input" placeholder="Drop — e.g. Majestic" required>
         </div>
       </div>
-      <div class="search-row">
-        <div class="input-group">
-          <label class="input-label">Date &amp; Time</label>
-          <div class="input-wrap">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-            <input id="hOfferDatetime" type="datetime-local" class="form-input" required>
+      <div class="grid-2">
+        <div class="field">
+          <label class="field__label" for="offWhen">Date &amp; time</label>
+          <div class="field__wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+            <input id="offWhen" type="datetime-local" class="input" required>
           </div>
         </div>
-        <div class="input-group">
-          <label class="input-label">Seats</label>
-          <div class="input-wrap">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <input id="hOfferSeats" type="number" class="form-input" min="1" max="6" placeholder="3" value="3" required>
+        <div class="field">
+          <label class="field__label" for="offSeats">Seats</label>
+          <div class="field__wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <input id="offSeats" type="number" class="input" min="1" max="6" value="3" required>
           </div>
         </div>
       </div>
-      <div class="search-row">
-        <div class="input-group">
-          <label class="input-label">Vehicle</label>
-          <div class="input-wrap">
-            <span id="home-vehicle-icon" style="display:contents"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span>
-            <select id="hOfferVehicle" class="form-input" onchange="RIDES.swapVehicleIcon('home-vehicle-icon', this.value)">
+      <div class="grid-2">
+        <div class="field">
+          <label class="field__label" for="offVehicle">Vehicle</label>
+          <div class="field__wrap">
+            <span id="offVehIcon" style="position:absolute; left:0.9rem; display:flex; color:var(--text-3); pointer-events:none; z-index:1;"></span>
+            <select id="offVehicle" class="input" onchange="swapVeh()">
               <option value="auto">Auto</option>
               <option value="cab" selected>Cab</option>
               <option value="bike">Bike</option>
             </select>
           </div>
         </div>
-        <div class="input-group">
-          <label class="input-label">Price (₹)</label>
-          <div class="input-wrap">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.667 0 6.667-10 0-10"/></svg>
-            <input id="hOfferPrice" type="number" class="form-input" min="1" placeholder="80" required>
+        <div class="field">
+          <label class="field__label" for="offPrice">Price / seat (₹)</label>
+          <div class="field__wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.667 0 6.667-10 0-10"/></svg>
+            <input id="offPrice" type="number" class="input" min="1" placeholder="80" required>
           </div>
         </div>
       </div>
-      <div style="display:flex; gap:0.625rem; margin-top:0.25rem;">
-        <button type="button" class="btn-ghost" style="flex:1" onclick="document.getElementById('offerOverlay').classList.remove('open')">Cancel</button>
-        <button type="submit" class="btn-primary" style="flex:2">Post Ride</button>
+      <div class="msg-error" id="offError" role="alert"></div>
+      <div class="sheet__actions">
+        <button type="button" class="btn btn--ghost" onclick="UI.closeSheet('offerOverlay')">Cancel</button>
+        <button type="submit" class="btn btn--primary">Post ride</button>
       </div>
     </form>
   </div>
 </div>
 
+<!-- Booked ride detail sheet -->
+<div class="overlay" id="detailOverlay" role="dialog" aria-modal="true" aria-labelledby="detailTitle" aria-hidden="true">
+  <div class="sheet">
+    <div class="sheet__handle"></div>
+    <h2 class="sheet__title" id="detailTitle">Your booking</h2>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
 <script>
-  // Auth check
-  if (!AUTH.requireAuth()) { /* redirected to login */ }
-  var user = AUTH.currentUser();
+  UI.mountNav('home');
 
-  /* ── Upcoming Bookings ── */
-  RIDES.getBookedBy(user, function (booked) {
-    var list   = document.getElementById('bookings-list');
-    var noEl   = document.getElementById('no-bookings');
-    var tagEl  = document.getElementById('bookings-tag');
+  var me = null, myPhone = '';
 
-    tagEl.textContent = booked.length + ' upcoming';
-    noEl.style.display = booked.length === 0 ? 'block' : 'none';
+  AUTH.requireAuth(function (user) {
+    me = user.email;
 
-    // Remove old dynamic cards (keep the no-bookings p)
-    Array.from(list.querySelectorAll('.ride-card')).forEach(function (c) { list.removeChild(c); });
-
-    booked.forEach(function (ride) {
-      var driverName = AUTH.displayName(ride.offeredBy);
-      var initials   = driverName.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
-      var seatsLeft  = Math.max(0, parseInt(ride.seats) - ride.bookedBy.length);
-
-      var card = document.createElement('div');
-      card.className = 'ride-card';
-      card.innerHTML =
-        '<div class="ride-top">' +
-          '<div class="ride-driver">' +
-            '<div class="ride-avatar">' + RIDES.esc(initials) + '</div>' +
-            '<div>' +
-              '<div class="ride-name">' + RIDES.esc(driverName) +
-                ' <svg class="verified-badge" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>' +
-              '</div>' +
-              '<div class="ride-meta">' + RIDES.cap(ride.vehicle || 'cab') + ' · ' + RIDES.esc(ride.offeredBy) + '</div>' +
-            '</div>' +
-          '</div>' +
-          '<span class="ride-time">' + RIDES.formatDT(ride.datetime) + '</span>' +
-        '</div>' +
-        '<div class="ride-route">' +
-          '<span class="route-from">' + RIDES.esc(ride.from) + '</span>' +
-          '<span class="route-arrow">→</span>' +
-          '<span class="route-to">'   + RIDES.esc(ride.to)   + '</span>' +
-        '</div>' +
-        '<div class="ride-footer">' +
-          '<span class="ride-price"><span class="currency">₹</span>' + RIDES.esc(String(ride.price || '—')) + '</span>' +
-          '<div class="ride-seats"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ' + seatsLeft + ' seat' + (seatsLeft !== 1 ? 's' : '') + ' left</div>' +
-          ((new Date(ride.datetime) - Date.now() > 15 * 60 * 1000)
-            ? '<button class="btn-cancel" onclick="cancelUpcomingBooking(\'' + ride.id + '\',this)">Cancel</button>'
-            : '<span class="status-badge completed">Booked</span>') +
-        '</div>';
-      list.appendChild(card);
+    /* ── Hero ── */
+    var now = new Date();
+    document.getElementById('heroGreeting').textContent =
+      UI.greeting() + ' · ' + now.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+    document.getElementById('heroTitle').textContent = 'Where to, ' + AUTH.firstName(me) + '?';
+    AUTH.loadMyName(function (nm) {
+      document.getElementById('heroTitle').textContent = 'Where to, ' + nm.split(' ')[0] + '?';
     });
+
+    /* ── Mandatory phone gate ── */
+    AUTH.getMyPhone(function (p) {
+      if (p) { myPhone = p; return; }
+      UI.requirePhone(function (phone, done) {
+        AUTH.setMyPhone(phone, function (r) {
+          if (r.ok) myPhone = phone;
+          done(r.ok);
+        });
+      });
+    });
+
+    loadBookings();
   });
 
-  function cancelUpcomingBooking(rideId, btn) {
-    if (!confirm('Cancel your booking for this ride?')) return;
-    btn.textContent = '…'; btn.disabled = true;
-    RIDES.cancelBooking(rideId, user, function (r) {
-      if (r.ok) {
-        btn.closest('.ride-card').remove();
-        var remaining = document.querySelectorAll('#bookings-list .ride-card').length;
-        document.getElementById('bookings-tag').textContent = remaining + ' upcoming';
-        if (remaining === 0) document.getElementById('no-bookings').style.display = 'block';
-      } else if (r.error === 'too_late') {
-        alert('Can\'t cancel within 15 minutes of the ride.');
-        btn.textContent = 'Cancel'; btn.disabled = false;
-      } else { btn.textContent = 'Cancel'; btn.disabled = false; }
+  /* ── Upcoming bookings ── */
+  var myBookings = [];
+  var PINM = '<svg class="pin-mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+
+  function loadBookings() {
+    UI.skeletons('bookingsList', 2);
+    RIDES.getBookedBy(me, function (booked) {
+      myBookings = booked
+        .filter(function (r) { return r.status !== 'cancelled' && !RIDES.isPast(r.datetime); })
+        .sort(function (a, b) { return new Date(a.datetime) - new Date(b.datetime); });
+      renderBookings();
     });
   }
 
-  function postRideHome(e) {
-    e.preventDefault();
-    var from    = document.getElementById('hOfferFrom').value.trim();
-    var to      = document.getElementById('hOfferTo').value.trim();
-    var dt      = document.getElementById('hOfferDatetime').value;
-    var seats   = parseInt(document.getElementById('hOfferSeats').value);
-    var vehicle = document.getElementById('hOfferVehicle').value;
-    var price   = parseInt(document.getElementById('hOfferPrice').value);
-
-    RIDES.add({ offeredBy: user, from: from, to: to, datetime: dt, seats: seats, vehicle: vehicle, price: price });
-
-    // Reset + close
-    document.getElementById('hOfferFrom').value = '';
-    document.getElementById('hOfferTo').value   = '';
-    document.getElementById('hOfferDatetime').value = '';
-    document.getElementById('hOfferSeats').value    = '3';
-    document.getElementById('hOfferVehicle').value  = 'cab';
-    document.getElementById('hOfferPrice').value    = '';
-    document.getElementById('offerOverlay').classList.remove('open');
-
-    // Brief confirmation
-    var sub = document.getElementById('heroTitle');
-    var prev = sub.textContent;
-    sub.textContent = 'Ride posted! ✓';
-    setTimeout(function() { sub.textContent = prev; }, 2000);
+  function renderBookings() {
+    var list = document.getElementById('bookingsList');
+    var tag  = document.getElementById('bookingsTag');
+    tag.textContent = myBookings.length + ' upcoming';
+    if (myBookings.length === 0) {
+      list.innerHTML =
+        '<div class="empty">' +
+          UI.icon('route', 44) +
+          '<h3>No rides booked yet</h3>' +
+          '<p>Grab a seat on a ride that matches your route.</p>' +
+          '<a href="rides.html" class="btn btn--soft btn--sm">' + UI.icon('search') + ' Find a ride</a>' +
+        '</div>';
+      return;
+    }
+    list.innerHTML = myBookings.map(function (r) {
+      var chip = UI.timeChip(r.datetime);
+      var driver = AUTH.rideName(r);
+      return (
+        '<article class="ticket" data-id="' + UI.esc(r.id) + '" tabindex="0" role="button" ' +
+          'aria-label="Booked ride ' + UI.esc(r.from) + ' to ' + UI.esc(r.to) + '">' +
+          '<div class="ticket__main">' +
+            '<div class="ticket__head">' +
+              '<span class="ticket__label">Booked · ' + RIDES.cap(r.vehicle || 'cab') + '</span>' +
+              '<span class="time-chip' + (chip.soon ? ' time-chip--soon' : '') + '">' + RIDES.formatDT(r.datetime) + '</span>' +
+            '</div>' +
+            '<div class="route">' +
+              '<div class="route__rail"><span class="route__dot route__dot--a"></span><span class="route__line"></span><span class="route__dot route__dot--b"></span></div>' +
+              '<div class="route__stop"><small>From' + (r.fromLat ? PINM : '') + '</small>' + UI.esc(r.from) + '</div>' +
+              '<div class="route__stop"><small>To' + (r.toLat ? PINM : '') + '</small>' + UI.esc(r.to) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="ticket__divider"></div>' +
+          '<div class="ticket__foot">' +
+            '<div class="avatar avatar--sm" style="' + UI.avatarStyle(r.offeredBy) + '">' + UI.initials(driver) + '</div>' +
+            '<div style="min-width:0; flex:1;">' +
+              '<div style="font-size:0.82rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + UI.esc(driver) + '</div>' +
+              '<div style="font-size:0.72rem; color:var(--text-3);">₹' + UI.esc(String(r.price || '—')) + '/seat</div>' +
+            '</div>' +
+            '<div class="ticket__barcode" aria-hidden="true"></div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join('');
+    UI.stagger(list);
   }
 
-  // Dynamic greeting + name
-  (function() {
-    var email = AUTH.currentUser();
-    if (!email) return;
-    var firstName = AUTH.displayName(email).split(' ')[0];
-    var h = new Date().getHours();
-    var greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-    document.getElementById('heroGreeting').textContent = greeting;
-    document.getElementById('heroTitle').textContent = 'Welcome back, ' + firstName + ' 👋';
-  })();
-</script>
+  /* ticket → detail sheet */
+  document.getElementById('bookingsList').addEventListener('click', function (e) {
+    var t = e.target.closest('.ticket');
+    if (t) openDetail(t.dataset.id);
+  });
+  document.getElementById('bookingsList').addEventListener('keydown', function (e) {
+    var t = e.target.closest('.ticket');
+    if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openDetail(t.dataset.id); }
+  });
 
-<!-- Bottom Nav (mobile) -->
-<nav class="bottom-nav" aria-label="Main navigation">
-  <div class="bottom-nav-inner">
-    <a href="index.html" class="bottom-nav-link active" aria-label="Home" aria-current="page">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-      <span>Home</span>
-    </a>
-    <a href="rides.html" class="bottom-nav-link" aria-label="Rides">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
-      <span>Rides</span>
-    </a>
-    <a href="profile.html" class="bottom-nav-link" aria-label="Profile">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Profile</span>
-    </a>
-    <button type="button" class="bottom-nav-link theme-toggle" data-theme-toggle aria-label="Toggle theme" aria-pressed="false">
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-      <span>Theme</span>
-    </button>
-  </div>
-</nav>
+  function openDetail(id) {
+    var r = myBookings.find(function (x) { return x.id === id; });
+    if (!r) return;
+    var driver = AUTH.rideName(r);
+    var canCancel = RIDES.canCancel(r.datetime);
+    var waDigits = (r.phone || '').replace(/\D/g, '');
+
+    document.getElementById('detailBody').innerHTML =
+      '<div class="detail__head">' +
+        '<div class="avatar" style="' + UI.avatarStyle(r.offeredBy) + '">' + UI.initials(driver) + '</div>' +
+        '<div style="min-width:0;">' +
+          '<div style="font-weight:600; display:flex; align-items:center; gap:0.35rem;">' + UI.esc(driver) +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>' +
+          '</div>' +
+          '<div style="font-size:0.78rem; color:var(--text-3); overflow:hidden; text-overflow:ellipsis;">' + UI.esc(r.offeredBy) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="route">' +
+        '<div class="route__rail"><span class="route__dot route__dot--a"></span><span class="route__line"></span><span class="route__dot route__dot--b"></span></div>' +
+        '<div class="route__stop"><small>From' + (r.fromLat ? PINM : '') + '</small>' + UI.esc(r.from) + '</div>' +
+        '<div class="route__stop"><small>To' + (r.toLat ? PINM : '') + '</small>' + UI.esc(r.to) + '</div>' +
+      '</div>' +
+      '<div class="detail-map" id="detailMapH"></div>' +
+      '<div class="detail__facts">' +
+        '<div class="fact"><small>When</small><span>' + RIDES.formatDT(r.datetime) + '</span></div>' +
+        '<div class="fact"><small>Vehicle</small><span>' + RIDES.cap(r.vehicle || 'cab') + '</span></div>' +
+        '<div class="fact"><small>Price / seat</small><span>₹' + UI.esc(String(r.price || '—')) + '</span></div>' +
+        '<div class="fact"><small>Status</small><span style="color:var(--green);">Booked ✓</span></div>' +
+      '</div>' +
+      '<div class="detail__actions">' +
+        (waDigits
+          ? '<button type="button" class="btn btn--wa btn--block" onclick="contactDriver(\'' + UI.esc(r.id) + '\')">' + UI.icon('phone') + ' WhatsApp ' + UI.esc(AUTH.rideFirstName(r)) + '</button>'
+          : '<p class="hint" style="text-align:center;">' + UI.esc(AUTH.rideFirstName(r)) + ' hasn’t added a phone number yet.</p>') +
+        '<div class="detail__actions-row">' +
+          '<button type="button" class="btn btn--soft" onclick="shareRide(\'' + UI.esc(r.id) + '\')">' + UI.icon('share') + ' Share</button>' +
+          (canCancel
+            ? '<button type="button" class="btn btn--danger" onclick="cancelBooking(\'' + UI.esc(r.id) + '\')">Cancel booking</button>'
+            : '<span class="badge badge--locked" style="align-self:center; margin:0 auto;">Locked &lt;15 min</span>') +
+        '</div>' +
+      '</div>';
+
+    /* exact pins on a mini map (only when the ride has coordinates) */
+    if (window.PLACES) {
+      PLACES.routeMap(document.getElementById('detailMapH'),
+        { lat: r.fromLat, lng: r.fromLng }, { lat: r.toLat, lng: r.toLng });
+    } else {
+      document.getElementById('detailMapH').style.display = 'none';
+    }
+
+    UI.openSheet('detailOverlay');
+  }
+
+  function findBooking(id) { return myBookings.find(function (x) { return x.id === id; }); }
+
+  function contactDriver(id) {
+    var r = findBooking(id);
+    if (!r || !r.phone) return;
+    var msg = 'Hi ' + AUTH.rideFirstName(r) + '! I booked your CampusRide ' +
+              r.from + ' → ' + r.to + ' (' + RIDES.formatDT(r.datetime) + ').';
+    window.open('https://wa.me/' + r.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+  }
+
+  function shareRide(id) {
+    var r = findBooking(id);
+    if (!r) return;
+    UI.share({
+      title: 'CampusRide',
+      text: 'My ride: ' + r.from + ' → ' + r.to + ' · ' + RIDES.formatDT(r.datetime) +
+            ' · with ' + AUTH.rideName(r) + ' (₹' + (r.price || '—') + '/seat)'
+    }, 'Ride details copied');
+  }
+
+  function cancelBooking(id) {
+    UI.confirm({
+      title: 'Cancel this booking?',
+      message: 'Your seat will be released for other students.',
+      confirmLabel: 'Cancel booking',
+      cancelLabel: 'Keep it',
+      danger: true
+    }).then(function (yes) {
+      if (!yes) return;
+      RIDES.cancelBooking(id, me, function (res) {
+        if (res.ok) {
+          UI.closeSheet('detailOverlay');
+          UI.toast('Booking cancelled', 'success');
+          loadBookings();
+        } else if (res.error === 'too_late') {
+          UI.toast('Can’t cancel within 15 minutes of the ride', 'error');
+        } else {
+          UI.toast('Something went wrong — try again', 'error');
+        }
+      });
+    });
+  }
+
+  /* ── Offer a ride ── */
+  function localDT(d) {
+    var p = function (n) { return String(n).padStart(2, '0'); };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  function openOffer() {
+    document.getElementById('offWhen').min = localDT(new Date());
+    document.getElementById('offError').style.display = 'none';
+    UI.openSheet('offerOverlay');
+  }
+
+  function swapVeh() {
+    document.getElementById('offVehIcon').innerHTML = UI.vehicleIcon(document.getElementById('offVehicle').value);
+  }
+  swapVeh();
+
+  function postRide(e) {
+    e.preventDefault();
+    var errEl = document.getElementById('offError');
+    errEl.style.display = 'none';
+
+    var from  = document.getElementById('offFrom').value.trim();
+    var to    = document.getElementById('offTo').value.trim();
+    var when  = document.getElementById('offWhen').value;
+    var seats = parseInt(document.getElementById('offSeats').value, 10);
+    var veh   = document.getElementById('offVehicle').value;
+    var price = parseInt(document.getElementById('offPrice').value, 10);
+
+    function fail(msg) { errEl.textContent = msg; errEl.style.display = 'block'; }
+    if (!from || !to)                      return fail('Add both pickup and drop locations.');
+    if (!when)                             return fail('Pick a date and time.');
+    if (new Date(when) - Date.now() < 0)   return fail('That time is in the past.');
+    if (!seats || seats < 1 || seats > 6)  return fail('Seats must be between 1 and 6.');
+    if (!price || price < 1)               return fail('Add a price per seat.');
+
+    var fromEl = document.getElementById('offFrom'), toEl = document.getElementById('offTo');
+    RIDES.add({
+      offeredBy: me, offererName: AUTH.myDisplayName(), from: from, to: to, datetime: when,
+      seats: seats, vehicle: veh, price: price,
+      phone: myPhone || '',
+      fromLat: fromEl.dataset.lat || '', fromLng: fromEl.dataset.lng || '',
+      toLat: toEl.dataset.lat || '', toLng: toEl.dataset.lng || ''
+    });
+
+    e.target.reset();
+    document.getElementById('offSeats').value = '3';
+    swapVeh();
+    UI.closeSheet('offerOverlay');
+    UI.toast('Ride posted — it’s live!', 'success', {
+      action: { label: 'View', fn: function () { window.location.href = 'rides.html'; } }
+    });
+  }
+
+  /* location autocomplete + map picker (places.js is deferred) */
+  window.addEventListener('DOMContentLoaded', function () {
+    if (window.PLACES) {
+      PLACES.attach(document.getElementById('offFrom'), { map: true });
+      PLACES.attach(document.getElementById('offTo'), { map: true });
+    }
+  });
+</script>
 
 </body>
 </html>
