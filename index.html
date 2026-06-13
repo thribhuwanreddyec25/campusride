@@ -271,15 +271,24 @@
         '<div class="route__stop"><small>To' + (r.toLat ? PINM : '') + '</small>' + UI.esc(r.to) + '</div>' +
       '</div>' +
       '<div class="detail-map" id="detailMapH"></div>' +
-      '<div class="detail__facts">' +
+      '<div class="detail__facts" style="margin-bottom:0.9rem;">' +
         '<div class="fact"><small>When</small><span>' + RIDES.formatDT(r.datetime) + '</span></div>' +
         '<div class="fact"><small>Vehicle</small><span>' + RIDES.cap(r.vehicle || 'cab') + '</span></div>' +
         '<div class="fact"><small>Price / seat</small><span>₹' + UI.esc(String(r.price || '—')) + '</span></div>' +
         '<div class="fact"><small>Status</small><span style="color:var(--green);">Booked ✓</span></div>' +
       '</div>' +
-      '<div class="detail__actions">' +
+      '<div class="detail__actions" style="margin-top:0;gap:0.9rem;">' +
         (waDigits
-          ? '<button type="button" class="btn btn--wa btn--block" onclick="contactDriver(\'' + UI.esc(r.id) + '\')">' + UI.icon('phone') + ' WhatsApp ' + UI.esc(AUTH.rideFirstName(r)) + '</button>'
+          ? '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:0.9rem 1rem;display:flex;flex-direction:column;gap:0.75rem;">' +
+              '<div style="display:flex;flex-direction:column;gap:0.25rem;">' +
+                '<span style="font-size:0.72rem;color:var(--text-3);letter-spacing:0.05em;text-transform:uppercase;">' + UI.esc(AUTH.rideFirstName(r)) + '’s number</span>' +
+                '<a href="tel:+' + waDigits + '" style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-1);text-decoration:none;letter-spacing:0.01em;">' + UI.esc(r.phone) + '</a>' +
+              '</div>' +
+              '<div style="display:flex;gap:0.5rem;">' +
+                '<button type="button" class="btn btn--wa" onclick="contactDriver(\'' + UI.esc(r.id) + '\')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;">' + UI.icon('phone') + ' WhatsApp</button>' +
+                '<a class="btn btn--soft" href="tel:+' + waDigits + '" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;text-decoration:none;">' + UI.icon('phone') + ' Call</a>' +
+              '</div>' +
+            '</div>'
           : '<p class="hint" style="text-align:center;">' + UI.esc(AUTH.rideFirstName(r)) + ' hasn’t added a phone number yet.</p>') +
         '<div class="detail__actions-row">' +
           '<button type="button" class="btn btn--soft" onclick="shareRide(\'' + UI.esc(r.id) + '\')">' + UI.icon('share') + ' Share</button>' +
